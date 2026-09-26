@@ -176,10 +176,10 @@ tailwind.config = {
           <h3 class="font-cabinet font-bold text-xl">School dates</h3>
           <p class="text-ink/55 text-sm">Change anything. Everything recalculates.</p>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-            <label class="text-xs font-semibold">First school day<span class="sable-date-wrap"><input type="text" readonly id="schoolStart" data-iso="2025-09-08" value="08 Sep 2025" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
-            <label class="text-xs font-semibold">Last school day<span class="sable-date-wrap"><input type="text" readonly id="schoolEnd" data-iso="2026-07-03" value="03 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
-            <label class="text-xs font-semibold">Semester ends<span class="sable-date-wrap"><input type="text" readonly id="semEnd" data-iso="2026-02-06" value="06 Feb 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
-            <label class="text-xs font-semibold">Summer break starts<span class="sable-date-wrap"><input type="text" readonly id="sumStart" data-iso="2026-06-29" value="29 Jun 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold">First school day<span class="sable-date-wrap"><input type="text" readonly id="schoolStart" data-iso="2025-09-14" value="14 Sep 2025" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold">Last school day<span class="sable-date-wrap"><input type="text" readonly id="schoolEnd" data-iso="2026-07-08" value="08 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold">Semester ends<span class="sable-date-wrap"><input type="text" readonly id="semEnd" data-iso="2026-02-15" value="15 Feb 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold">Summer break starts<span class="sable-date-wrap"><input type="text" readonly id="sumStart" data-iso="2026-07-08" value="08 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 items-end">
             <label class="text-xs font-semibold">Exam weekday
@@ -298,7 +298,7 @@ function prettyISO(iso){const p=iso.split("-");const d=new Date(+p[0],+p[1]-1,+p
 function getISO(id){const el=document.getElementById(id);return el.dataset.iso||el.value}
 function openCal(input){
   calTarget = input;
-  const iso = input.dataset.iso || "2025-09-08";
+  const iso = input.dataset.iso || "2025-09-14";
   const p = iso.split("-"); viewY = +p[0]; viewM = (+p[1])-1; viewMode = "days";
   positionCal(input); renderCal();
   sableCal.classList.add("open"); sableBack.classList.add("open");
@@ -373,11 +373,10 @@ const statLine = document.getElementById("statLine");
 let lastPlan = [];
 
 const defaultHols = [
-  {name:"Autumn break", start:"2025-10-25", end:"2025-11-02"},
-  {name:"Christmas", start:"2025-12-20", end:"2026-01-06"},
+  {name:"Autumn break", start:"2025-10-26", end:"2025-11-02"},
+  {name:"Christmas", start:"2025-12-24", end:"2026-01-06"},
   {name:"Semester break", start:"2026-02-07", end:"2026-02-15"},
-  {name:"Easter", start:"2026-03-28", end:"2026-04-07"},
-  {name:"Pentecost", start:"2026-05-23", end:"2026-05-26"}
+  {name:"Easter break", start:"2026-03-22", end:"2026-03-29"}
 ];
 const defaultRows = [
   {cls:"5M", subject:"Math", teacher:"Mr. Fox", count:4},
