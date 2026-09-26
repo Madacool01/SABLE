@@ -44,10 +44,10 @@ tailwind.config = {
   table.plan{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
   table.plan th{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(246,241,231,.55);text-align:left;padding:.6rem .75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   table.plan td{padding:.45rem .5rem;border-top:1px solid rgba(246,241,231,.1);vertical-align:middle}
-  table.plan td input{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:.55rem .55rem .55rem .9rem!important;text-overflow:ellipsis;overflow:hidden}
+  table.plan td input, table.plan td select{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:.55rem .55rem .55rem .9rem!important;text-overflow:ellipsis;overflow:hidden}
   table.plan td:last-child{width:64px;text-align:center}
   .table-scroll{overflow-x:auto}
-  .table-scroll table.plan{min-width:560px}
+  .table-scroll table.plan{min-width:680px}
   .alt-pill{border:1px solid rgba(246,241,231,.2);border-radius:999px;padding:.25rem .65rem;font-size:.78rem;cursor:pointer;transition:all .25s}
   .alt-pill:hover{border-color:#E8C15A}
   .alt-pill.active{background:#E8C15A;color:#14100A;border-color:#E8C15A;font-weight:700}
@@ -101,7 +101,7 @@ tailwind.config = {
             <h2 class="text-white font-cabinet font-black text-3xl md:text-4xl leading-tight">Build your year in three steps.</h2>
             <ol class="mt-4 text-white/80 space-y-2 text-[.95rem]">
               <li><strong class="text-white">1. Check dates</strong> — school year, holidays, deadlines.</li>
-              <li><strong class="text-white">2. List exams</strong> — class, subject, teacher, count.</li>
+              <li><strong class="text-white">2. List exams</strong> — class, subject, teacher, count, lesson day.</li>
               <li><strong class="text-white">3. Pick finals</strong> — accept the suggestion or click an alternative.</li>
             </ol>
             <div id="statLine" class="mt-6 inline-flex items-center gap-3 text-sm bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white w-fit">Ready when you are.</div>
@@ -116,16 +116,14 @@ tailwind.config = {
             <label class="text-xs font-semibold">Semester ends<span class="sable-date-wrap"><input type="text" readonly id="semEnd" data-iso="2026-02-15" value="15 Feb 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
             <label class="text-xs font-semibold">Summer break starts<span class="sable-date-wrap"><input type="text" readonly id="sumStart" data-iso="2026-07-08" value="08 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 items-end">
-            <label class="text-xs font-semibold">Exam weekday
-              <select id="weekday" class="!text-ink !bg-white !border-ink/15"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5" selected>Friday</option></select>
-            </label>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 items-end">
             <label class="text-xs font-semibold">Teaching weeks before first exam
               <select id="leadWeeks" class="!text-ink !bg-white !border-ink/15"><option value="2">2 weeks</option><option value="3">3 weeks</option><option value="4" selected>4 weeks</option><option value="5">5 weeks</option><option value="6">6 weeks</option></select>
             </label>
             <label class="flex items-center gap-2 text-sm col-span-1"><input type="checkbox" id="blockWeekAfter" checked class="!w-5"> Calm week after holidays</label>
             <label class="flex items-center gap-2 text-sm col-span-1"><input type="checkbox" id="blockNoten" checked class="!w-5"> Quiet 2 weeks before deadlines</label>
           </div>
+          <p class="text-xs text-ink/50 mt-2">Exam day is set per row in the table below — pick the weekday that subject already has a lesson.</p>
           <div class="mt-8">
             <div class="flex items-center justify-between">
               <h3 class="font-cabinet font-bold text-xl">Holidays <span class="text-sm font-normal text-ink/50">(tap a date to open the calendar)</span></h3>
@@ -141,7 +139,7 @@ tailwind.config = {
               <button id="addRow" class="text-sm font-bold underline underline-offset-4">+ Add row</button>
             </div>
             <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden table-scroll">
-              <table class="plan !text-ink"><thead><tr><th>Class</th><th>Subject</th><th>Teacher</th><th>Count</th><th></th></tr></thead><tbody id="rowBody"></tbody></table>
+              <table class="plan !text-ink"><thead><tr><th>Class</th><th>Subject</th><th>Teacher</th><th>Count</th><th>Lesson day</th><th></th></tr></thead><tbody id="rowBody"></tbody></table>
             </div>
             <p class="text-xs text-ink/50 mt-2">Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.</p>
           </div>
@@ -265,13 +263,13 @@ const defaultHols = [
   {name:"Easter break", start:"2026-03-22", end:"2026-03-29"}
 ];
 const defaultRows = [
-  {cls:"5M", subject:"Math", teacher:"Mr. Fox", count:4},
-  {cls:"5M", subject:"English", teacher:"Ms. Hart", count:3},
-  {cls:"6L", subject:"German", teacher:"Mr. Brand", count:3},
-  {cls:"6L", subject:"Math", teacher:"Ms. Quinn", count:2}
+  {cls:"5M", subject:"Math", teacher:"Mr. Fox", count:4, wd:3},
+  {cls:"5M", subject:"English", teacher:"Ms. Hart", count:3, wd:4},
+  {cls:"6L", subject:"German", teacher:"Mr. Brand", count:3, wd:2},
+  {cls:"6L", subject:"Math", teacher:"Ms. Quinn", count:2, wd:5}
 ];
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function dstr(d){return d.toISOString().slice(0,10)}
+function dstr(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function parseD(v){const p=v.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
 function fmt(d){return d.toLocaleDateString("en-GB",{weekday:"short",day:"2-digit",month:"short",year:"numeric"})}
 function mondayOf(d){const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.getDate()-day);x.setHours(0,0,0,0);return x}
@@ -283,19 +281,31 @@ function renderHols(){
     <td><span class="sable-date-wrap"><input type="text" readonly value="${prettyISO(h.end)}" data-iso="${h.end}" data-h="${i}" data-k="end" class="sable-date !bg-white !text-ink !border-ink/15 !py-1.5"></span></td>
     <td><button data-delhol="${i}" class="text-sm font-bold opacity-50 hover:opacity-100">Remove</button></td></tr>`).join("");
 }
+function dayOptions(sel){const days=["Monday","Tuesday","Wednesday","Thursday","Friday"];return days.map((d,i)=>`<option value="${i+1}" ${+sel===i+1?"selected":""}>${d.slice(0,3)}</option>`).join("")}
 function renderRows(){
   rowBody.innerHTML = defaultRows.map((r,i)=>`<tr>
     <td><input value="${esc(r.cls)}" data-r="${i}" data-k="cls" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
     <td><input value="${esc(r.subject)}" data-r="${i}" data-k="subject" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
     <td><input value="${esc(r.teacher)}" data-r="${i}" data-k="teacher" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
     <td><input type="number" min="1" max="12" value="${r.count}" data-r="${i}" data-k="count" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
+    <td><select data-r="${i}" data-k="wd" class="!bg-white !text-ink !border-ink/15 !py-1.5">${dayOptions(r.wd||5)}</select></td>
     <td><button data-delrow="${i}" class="text-sm font-bold opacity-50 hover:opacity-100">Remove</button></td></tr>`).join("");
+}
+function syncRowField(el){
+  const r=el.dataset.r, rk=el.dataset.k;
+  if(r===undefined||!defaultRows[r])return;
+  if(rk==="count")defaultRows[r][rk]=Math.max(1,Math.min(12,+el.value||1));
+  else if(rk==="wd")defaultRows[r][rk]=Math.max(1,Math.min(5,+el.value||5));
+  else defaultRows[r][rk]=el.value;
 }
 document.addEventListener("input",e=>{
   const h=e.target.dataset.h, k=e.target.dataset.k;
   if(h!==undefined&&defaultHols[h]){defaultHols[h][k]=e.target.value;return}
   const r=e.target.dataset.r, rk=e.target.dataset.k;
-  if(r!==undefined&&defaultRows[r]){defaultRows[r][rk]=rk==="count"?Math.max(1,Math.min(12,+e.target.value||1)):e.target.value}
+  if(r!==undefined&&defaultRows[r]){syncRowField(e.target)}
+});
+document.addEventListener("change",e=>{
+  if(e.target.dataset&&e.target.dataset.r!==undefined)syncRowField(e.target);
 });
 document.addEventListener("click",e=>{
   const dh=e.target.dataset.delhol, dr=e.target.dataset.delrow;
@@ -303,16 +313,29 @@ document.addEventListener("click",e=>{
   if(dr!==undefined){defaultRows.splice(+dr,1);renderRows()}
 });
 document.getElementById("addHol").onclick=()=>{defaultHols.push({name:"New break",start:"2026-01-01",end:"2026-01-03"});renderHols()};
-document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5M",subject:"New subject",teacher:"",count:2});renderRows()};
+document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5M",subject:"New subject",teacher:"",count:2,wd:5});renderRows()};
 
 function getHols(){return defaultHols.map(h=>({name:h.name,start:parseD(h.start),end:parseD(h.end)})).filter(h=>h.start&&h.end&&h.end>=h.start)}
 
-function buildWeeks(){
-  const s=parseD(getISO("schoolStart")), e=parseD(getISO("schoolEnd"));
-  const wd=+document.getElementById("weekday").value;
-  const weeks=[];let m=mondayOf(s);
-  while(m<=e){const exam=new Date(m);exam.setDate(m.getDate()+(wd-1));exam.setHours(0,0,0,0);if(exam>=s&&exam<=e)weeks.push({monday:new Date(m),exam});m.setDate(m.getDate()+7)}
-  return {weeks,range:{s,e}};
+function buildMondays(s,e){
+  const out=[];let m=mondayOf(s);
+  while(m<=e){out.push(new Date(m));m.setDate(m.getDate()+7)}
+  return out;
+}
+// Calm candidate dates for one subject: its own lesson weekday only,
+// kept inside the school year and clear of teaching buffer, holidays and deadlines.
+function candidatesFor(wd,s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blockNoten){
+  wd=Math.max(1,Math.min(5,+wd||5));
+  return buildMondays(s,e).map(m=>{
+    const exam=new Date(m);exam.setDate(m.getDate()+(wd-1));exam.setHours(0,0,0,0);
+    return{monday:m,exam};
+  }).filter(w=>{
+    if(w.exam<s||w.exam>e||w.exam<leadCutoff)return false;
+    const dow=w.exam.getDay();
+    if(dow===0||dow===6)return false;
+    if((w.exam.getDay()+6)%7!==wd-1)return false;
+    return !weekStatus(w.exam,hols,semEnd,sumStart,blockWeekAfter,blockNoten).blocked;
+  });
 }
 function weekStatus(examDate,hols,semEnd,sumStart,blockWeekAfter,blockNoten){
   for(const h of hols){
@@ -335,44 +358,44 @@ function generate(){
   const semEnd=parseD(getISO("semEnd")), sumStart=parseD(getISO("sumStart"));
   const blockWeekAfter=document.getElementById("blockWeekAfter").checked, blockNoten=document.getElementById("blockNoten").checked;
   const leadWeeks=+document.getElementById("leadWeeks").value||4;
-  const {weeks,range}=buildWeeks();
-  const leadCutoff=new Date(range.s);leadCutoff.setDate(leadCutoff.getDate()+leadWeeks*7);
-  const annotated=weeks.map(w=>{
-    if(w.exam<leadCutoff)return{...w,blocked:true,hard:true,reason:"Teaching time — only week "+Math.max(1,Math.ceil((w.exam-range.s)/86400000/7))+" of school"};
-    return{...w,...weekStatus(w.exam,hols,semEnd,sumStart,blockWeekAfter,blockNoten)};
-  });
-  const calm=annotated.filter(w=>!w.blocked);
+  const s=parseD(getISO("schoolStart")), e=parseD(getISO("schoolEnd"));
+  const leadCutoff=new Date(s);leadCutoff.setDate(leadCutoff.getDate()+leadWeeks*7);
   const byClass={};
   defaultRows.forEach((r,idx)=>{const c=(r.cls||"Class").trim()||"Class";(byClass[c]=byClass[c]||[]).push({...r,idx})});
   lastPlan=[];const warns=[];
+  let calmCount=0;
   for(const [cls,rows] of Object.entries(byClass)){
+    // Per-subject calm dates on each subject's own lesson weekday.
+    const candsByRow=rows.map(row=>candidatesFor(+row.wd||5,s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blockNoten));
+    calmCount=Math.max(calmCount,...candsByRow.map(c=>c.length));
     const total=rows.reduce((a,r)=>a+ +r.count,0);
-    if(calm.length<total)warns.push(`<strong>${esc(cls)}</strong> needs ${total} exams but only ${calm.length} calm weeks exist. Reduce counts or open more weeks.`);
-    // Pool every exam of every subject: each subject's exams get ideal slots
-    // spread evenly over the whole calm range, then all ideals are merged and
-    // sorted so subjects interleave (math, english, math...) instead of
-    // running one subject fully before the next.
-    const M=calm.length;
+    rows.forEach((row,ri)=>{
+      if(candsByRow[ri].length<+row.count)warns.push(`<strong>${esc(cls)} / ${esc(row.subject)}</strong>: only ${candsByRow[ri].length} free ${["","Mon","Tue","Wed","Thu","Fri"][+row.wd||5]} dates for ${row.count} exams. Change the lesson day or open more weeks.`);
+    });
+    // Pool every exam: each subject's exams spread evenly (fraction 0..1) over
+    // its own calm dates, then merged and sorted so subjects interleave
+    // instead of running one subject fully before the next.
     const pool=[];
-    rows.forEach(row=>{
-      const n=+row.count||0;
+    rows.forEach((row,ri)=>{
+      const n=+row.count||0, cands=candsByRow[ri];
       for(let i=0;i<n;i++){
-        const ideal=n===1?(M-1)/2:(i*(M-1)/(n-1));
-        pool.push({row,examNo:i+1,of:n,ideal});
+        const frac=n===1?0.5:(i/(n-1));
+        pool.push({row,ri,examNo:i+1,of:n,frac,idealIdx:frac*(cands.length-1)});
       }
     });
-    pool.sort((a,b)=>(a.ideal-b.ideal)||(a.of-b.of)||(a.row.subject<b.row.subject?-1:1));
+    pool.sort((a,b)=>(a.frac-b.frac)||(a.of-b.of)||(a.row.subject<b.row.subject?-1:1));
     const occupied=new Set();
     const placed=[];
     for(const item of pool){
+      const cands=candsByRow[item.ri];
       let best=null,bd=1e9;
-      calm.forEach((w,wi)=>{
-        if(occupied.has(dstr(w.exam)))return;
-        const d=Math.abs(wi-item.ideal);
+      cands.forEach((w,wi)=>{
+        if(occupied.has(dstr(w.monday)))return;
+        const d=Math.abs(wi-item.idealIdx);
         if(d<bd||(d===bd&&best&&w.exam<best.exam)){bd=d;best=w}
       });
       if(!best){warns.push(`<strong>${esc(cls)} / ${esc(item.row.subject)}</strong>: no free week left for exam ${item.examNo}/${item.of}.`);continue}
-      occupied.add(dstr(best.exam));
+      occupied.add(dstr(best.monday));
       placed.push({...item,week:best});
     }
     placed.sort((a,b)=>a.week.exam-b.week.exam);
@@ -381,13 +404,14 @@ function generate(){
     placed.forEach(p=>{
       const key=p.row.subject;counters[key]=(counters[key]||0)+1;
       const examNo=counters[key];
-      const alts=calm.filter(x=>!occupied.has(dstr(x.exam))||x===p.week).sort((a,b)=>Math.abs(a.exam-p.week.exam)-Math.abs(b.exam-p.week.exam)).slice(0,4).sort((a,b)=>a.exam-b.exam);
+      const cands=candsByRow[p.ri];
+      const alts=cands.filter(x=>!occupied.has(dstr(x.monday))||x===p.week).sort((a,b)=>Math.abs(a.exam-p.week.exam)-Math.abs(b.exam-p.week.exam)).slice(0,4).sort((a,b)=>a.exam-b.exam);
       if(!alts.includes(p.week))alts.push(p.week);
       lastPlan.push({cls,subject:p.row.subject,teacher:p.row.teacher,examNo,of:p.of,chosen:dstr(p.week.exam),options:alts.map(a=>({date:dstr(a.exam),label:fmt(a.exam)}))});
     });
   }
   if(warns.length){warnBox.classList.remove("hidden");warnBox.innerHTML=warns.join("<br>")}else{warnBox.classList.add("hidden");warnBox.innerHTML=""}
-  statLine.textContent = `${calm.length} calm weeks found · ${lastPlan.length} exams placed`;
+  statLine.textContent = `${calmCount} calm lesson dates found · ${lastPlan.length} exams placed`;
   renderResults();
 }
 function gapDays(aISO,bISO){return Math.round((parseD(bISO)-parseD(aISO))/86400000)}
@@ -415,8 +439,8 @@ document.addEventListener("click",e=>{
   const [cls,subj,no]=pk.split("|");const date=e.target.dataset.date;
   const entry=lastPlan.find(p=>p.cls===cls&&p.subject===subj&&String(p.examNo)===String(no));
   if(!entry)return;
-  const clash=lastPlan.find(p=>p!==entry&&p.cls===cls&&p.chosen===date);
-  if(clash){alert(`${cls} already has ${clash.subject} exam on that day. Pick another week.`);return}
+  const clash=lastPlan.find(p=>p!==entry&&p.cls===cls&&dstr(mondayOf(parseD(p.chosen)))===dstr(mondayOf(parseD(date))));
+  if(clash){alert(`${cls} already has ${clash.subject} exam that week. Pick another week.`);return}
   entry.chosen=date;renderResults();
 });
 document.getElementById("genBtn").onclick=generate;
