@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schulabitur Planner — Even Exam Dates Made Simple</title>
+<title>SABLE — Schularbeit Balanced Layout Engine</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -56,7 +56,7 @@ tailwind.config = {
 <!-- NAV -->
 <div class="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
   <nav class="glass rounded-full pl-6 pr-2 py-2 flex items-center gap-6 max-w-3xl w-full md:w-auto shadow-2xl">
-    <span class="font-cabinet font-black tracking-tight text-lg">Schulabitur <span class="text-gold">Planner</span></span>
+    <span class="font-cabinet font-black tracking-tight text-lg">SABLE <span class="text-gold font-light text-sm hidden sm:inline">Schularbeit Balanced Layout Engine</span></span>
     <span class="hidden md:flex items-center gap-5 text-sm text-white/70">
       <a href="#rules" class="hover:text-white">Rules</a>
       <a href="#planner" class="hover:text-white">Planner</a>
@@ -76,7 +76,7 @@ tailwind.config = {
     <h1 class="w-full max-w-6xl mx-auto font-cabinet font-black leading-[1.02]" style="font-size:clamp(2.8rem,5vw,5.2rem)">
       Exam dates that <span class="pill-img" style="background-image:url('https://picsum.photos/seed/calendar/400/200')"></span> spread themselves evenly.
     </h1>
-    <p class="hero-sub mt-6 max-w-2xl mx-auto text-lg text-white/70 font-light">Type your classes, pick how many exams each subject needs, and get fair dates that respect holidays and grade deadlines.</p>
+    <p class="hero-sub mt-6 max-w-2xl mx-auto text-lg text-white/70 font-light">SABLE — Schularbeit Balanced Layout Engine. Type your classes, pick how many Schularbeiten each subject needs, and get fair dates that respect holidays and grade deadlines.</p>
     <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
       <a href="#planner" class="btn-gold rounded-full px-8 py-4 text-base">Create my schedule</a>
       <a href="#how" class="btn-ghost rounded-full px-8 py-4 text-base">See how it works</a>
@@ -233,7 +233,7 @@ tailwind.config = {
     <p class="mt-4 text-ink/60 max-w-xl mx-auto">Print the suggestion, discuss it in the staff room, click alternatives where needed. Done.</p>
     <a href="#planner" class="inline-block mt-8 bg-ink text-paper rounded-full px-10 py-4 font-bold">Back to planner</a>
   </div>
-  <p class="text-center text-white/30 text-xs mt-8">Prototype 1 — holidays, deadlines and even spacing only. Trips and teacher absence come next.</p>
+  <p class="text-center text-white/30 text-xs mt-8">SABLE Prototype 1 — Schularbeit Balanced Layout Engine. Holidays, deadlines and even spacing only. Trips and teacher absence come next.</p>
 </footer>
 </main>
 
@@ -407,7 +407,7 @@ document.getElementById("csvBtn").onclick=()=>{
   if(!lastPlan.length){alert("Generate dates first.");return}
   const rows=[["Class","Subject","Teacher","Exam","Date"],...lastPlan.map(p=>[p.cls,p.subject,p.teacher,`Exam ${p.examNo}/${p.of}`,p.chosen])];
   const blob=new Blob([rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n")],{type:"text/csv"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="schulabitur-plan.csv";a.click();
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="sable-plan.csv";a.click();
 };
 renderHols();renderRows();
 </script>
