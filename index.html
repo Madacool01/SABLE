@@ -76,7 +76,20 @@ tailwind.config = {
   #sableCal .cal-foot button:hover{background:#E8C15A;color:#14100A;border-color:#E8C15A}
   #sableCalBack{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .25s}
   #sableCalBack.open{opacity:1;pointer-events:auto}
-  @media print{ .no-print{display:none!important} body{background:#fff;color:#000} }
+  #printSheet{display:none}
+  @media print{
+    .no-print{display:none!important}
+    body{background:#fff!important;color:#111!important}
+    main,.glass,#sableCal,#sableCalBack{display:none!important}
+    .grain::before{display:none!important}
+    #printSheet{display:block!important;color:#111}
+    #printSheet h1{font-size:22pt;margin:0}
+    #printSheet .sub{color:#555;font-size:10pt;margin:4px 0 16px}
+    #printSheet h2{font-size:14pt;margin:18px 0 6px}
+    #printSheet table{width:100%;border-collapse:collapse;font-size:10pt;margin-bottom:10px}
+    #printSheet th{text-align:left;border-bottom:2px solid #111;padding:6px 8px}
+    #printSheet td{border-bottom:1px solid #ccc;padding:6px 8px}
+  }
 </style>
 </head>
 <body class="grain">
@@ -138,7 +151,7 @@ tailwind.config = {
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
             <button id="genBtn" class="btn-gold rounded-full px-8 py-4 flex-1 !bg-ink !text-paper hover:!bg-black">Generate my dates</button>
             <button id="csvBtn" class="rounded-full px-6 py-4 border border-ink/20 font-semibold hover:bg-ink/5">Download CSV</button>
-            <button onclick="window.print()" class="rounded-full px-6 py-4 border border-ink/20 font-semibold hover:bg-ink/5 no-print">Print</button>
+            <button onclick="renderPrint();window.print()" class="rounded-full px-6 py-4 border border-ink/20 font-semibold hover:bg-ink/5 no-print">Print</button>
           </div>
           <div id="warnBox" class="mt-4 hidden rounded-2xl bg-clay/15 border border-clay/40 p-4 text-sm"></div>
         </div>
@@ -158,6 +171,7 @@ tailwind.config = {
 <div id="sableCalBack"></div>
 <div id="sableCal" role="dialog" aria-label="Choose a date"><div class="cal-head"><button class="cal-nav" id="calPrev" type="button">‹</button><div class="cal-title" id="calTitle">Month Year</div><button class="cal-nav" id="calNext" type="button">›</button></div><div id="calBody"></div><div class="cal-foot"><button id="calToday" type="button">Today</button><button id="calClose" type="button">Done</button></div></div>
 </main>
+<section id="printSheet" aria-label="Printable exam schedule"></section>
 
 <script>
 // Planner entrance
@@ -447,7 +461,22 @@ function generate(){
   }
   if(warns.length){warnBox.classList.remove("hidden");warnBox.innerHTML=warns.join("<br>")}else{warnBox.classList.add("hidden");warnBox.innerHTML=""}
   statLine.textContent = `${calmCount} calm lesson dates found · ${lastPlan.length} exams placed`;
-  renderResults();
+  renderResults(); renderPrint();
+}
+function renderPrint(){
+  const sheet=document.getElementById("printSheet");
+  if(!lastPlan.length){sheet.innerHTML="<h1>SABLE — Exam Schedule</h1><p class='sub'>Nothing generated yet.</p>";return}
+  const range=prettyISO(getISO("schoolStart"))+" – "+prettyISO(getISO("schoolEnd"));
+  const today=new Date().toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+  const byCls={};lastPlan.forEach(p=>{(byCls[p.cls]=byCls[p.cls]||[]).push(p)});
+  Object.values(byCls).forEach(items=>items.sort((a,b)=>parseD(a.chosen)-parseD(b.chosen)));
+  sheet.innerHTML=`<h1>SABLE — Exam Schedule</h1><p class='sub'>School year ${esc(range)} · Printed ${esc(today)}</p>`+
+    Object.entries(byCls).map(([cls,items])=>`<h2>Class ${esc(cls)}</h2><table><thead><tr><th>Date</th><th>Subject</th><th>Teacher</th><th>Exam</th><th>Gap</th></tr></thead><tbody>`+
+      items.map(p=>{
+        const prev=lastPlan.find(q=>q.cls===p.cls&&q.subject===p.subject&&q.examNo===p.examNo-1);
+        const gap=prev?`+${gapDays(prev.chosen,p.chosen)} days`:"first";
+        return`<tr><td><strong>${fmt(parseD(p.chosen))}</strong></td><td>${esc(p.subject)}</td><td>${esc(p.teacher||"—")}</td><td>${p.examNo}/${p.of}</td><td>${gap}</td></tr>`;
+      }).join("")+`</tbody></table>`).join("");
 }
 function gapDays(aISO,bISO){return Math.round((parseD(bISO)-parseD(aISO))/86400000)}
 function renderResults(){
@@ -476,7 +505,7 @@ document.addEventListener("click",e=>{
   if(!entry)return;
   const clash=lastPlan.find(p=>p!==entry&&p.cls===cls&&dstr(mondayOf(parseD(p.chosen)))===dstr(mondayOf(parseD(date))));
   if(clash){alert(`${cls} already has ${clash.subject} exam that week. Pick another week.`);return}
-  entry.chosen=date;renderResults();
+  entry.chosen=date;renderResults();renderPrint();
 });
 document.getElementById("genBtn").onclick=generate;
 document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all rows, holidays and dates to the example?"))resetSable()};
