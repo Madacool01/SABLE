@@ -136,7 +136,7 @@ tailwind.config = {
           <div class="mt-8">
             <div class="flex items-center justify-between">
               <h3 class="font-cabinet font-bold text-xl">What needs exams?</h3>
-              <button id="addRow" class="text-sm font-bold underline underline-offset-4">+ Add row</button>
+              <span class="flex gap-4"><button id="resetAll" class="text-sm opacity-50 hover:opacity-100 underline underline-offset-4">Reset example</button><button id="addRow" class="text-sm font-bold underline underline-offset-4">+ Add row</button></span>
             </div>
             <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden table-scroll">
               <table class="plan !text-ink"><thead><tr><th>Class</th><th>Subject</th><th>Teacher</th><th>Count</th><th>Lesson day</th><th></th></tr></thead><tbody id="rowBody"></tbody></table>
@@ -243,7 +243,7 @@ function pickISO(iso){
   const hi = calTarget.dataset.h, hk = calTarget.dataset.k;
   if(hi!==undefined && hi!=="" && (hk==="start"||hk==="end") && defaultHols[+hi]) defaultHols[+hi][hk]=iso;
   if(window.gsap) gsap.fromTo(calTarget,{scale:.96},{scale:1,duration:.3,ease:"back.out(2)"});
-  renderCal(); closeCal();
+  renderCal(); closeCal(); saveSable();
 }
 document.addEventListener("focusin",e=>{ if(e.target.classList && e.target.classList.contains("sable-date")) openCal(e.target) });
 document.addEventListener("click",e=>{ const f=e.target.closest && e.target.closest(".sable-date"); if(f) openCal(f) });
@@ -256,18 +256,60 @@ const warnBox = document.getElementById("warnBox");
 const statLine = document.getElementById("statLine");
 let lastPlan = [];
 
-const defaultHols = [
+let defaultHols = [
   {name:"Autumn break", start:"2025-10-26", end:"2025-11-02"},
   {name:"Christmas", start:"2025-12-24", end:"2026-01-06"},
   {name:"Semester break", start:"2026-02-07", end:"2026-02-15"},
   {name:"Easter break", start:"2026-03-22", end:"2026-03-29"}
 ];
-const defaultRows = [
+let defaultRows = [
   {cls:"5M", subject:"Math", teacher:"Mr. Fox", count:4, wd:3},
   {cls:"5M", subject:"English", teacher:"Ms. Hart", count:3, wd:4},
   {cls:"6L", subject:"German", teacher:"Mr. Brand", count:3, wd:2},
   {cls:"6L", subject:"Math", teacher:"Ms. Quinn", count:2, wd:5}
 ];
+const EXAMPLE_HOLS = JSON.parse(JSON.stringify(defaultHols));
+const EXAMPLE_ROWS = JSON.parse(JSON.stringify(defaultRows));
+const SABLE_KEY = "sable-v1";
+function setDateField(id,iso){const el=document.getElementById(id);if(!el||!iso)return;el.dataset.iso=iso;el.value=prettyISO(iso)}
+function saveSable(){
+  try{
+    localStorage.setItem(SABLE_KEY,JSON.stringify({
+      rows:defaultRows, hols:defaultHols,
+      schoolStart:getISO("schoolStart"), schoolEnd:getISO("schoolEnd"),
+      semEnd:getISO("semEnd"), sumStart:getISO("sumStart"),
+      leadWeeks:document.getElementById("leadWeeks").value,
+      blockWeekAfter:document.getElementById("blockWeekAfter").checked,
+      blockNoten:document.getElementById("blockNoten").checked
+    }));
+  }catch(err){}
+}
+function loadSable(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(SABLE_KEY)||"null")}catch(err){d=null}
+  if(!d)return false;
+  if(Array.isArray(d.rows))defaultRows=d.rows.map(r=>({cls:String(r.cls||""),subject:String(r.subject||""),teacher:String(r.teacher||""),count:Math.max(1,Math.min(12,+r.count||1)),wd:Math.max(1,Math.min(5,+r.wd||5))}));
+  if(Array.isArray(d.hols))defaultHols=d.hols.map(h=>({name:String(h.name||"Break"),start:h.start,end:h.end})).filter(h=>h.start&&h.end);
+  if(d.schoolStart)setDateField("schoolStart",d.schoolStart);
+  if(d.schoolEnd)setDateField("schoolEnd",d.schoolEnd);
+  if(d.semEnd)setDateField("semEnd",d.semEnd);
+  if(d.sumStart)setDateField("sumStart",d.sumStart);
+  if(d.leadWeeks)document.getElementById("leadWeeks").value=d.leadWeeks;
+  if(typeof d.blockWeekAfter==="boolean")document.getElementById("blockWeekAfter").checked=d.blockWeekAfter;
+  if(typeof d.blockNoten==="boolean")document.getElementById("blockNoten").checked=d.blockNoten;
+  return true;
+}
+function resetSable(){
+  try{localStorage.removeItem(SABLE_KEY)}catch(err){}
+  defaultHols=JSON.parse(JSON.stringify(EXAMPLE_HOLS));
+  defaultRows=JSON.parse(JSON.stringify(EXAMPLE_ROWS));
+  setDateField("schoolStart","2025-09-14");setDateField("schoolEnd","2026-07-08");
+  setDateField("semEnd","2026-02-15");setDateField("sumStart","2026-07-08");
+  document.getElementById("leadWeeks").value="4";
+  document.getElementById("blockWeekAfter").checked=true;
+  document.getElementById("blockNoten").checked=true;
+  renderHols();renderRows();
+}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function dstr(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function parseD(v){const p=v.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
@@ -300,20 +342,21 @@ function syncRowField(el){
 }
 document.addEventListener("input",e=>{
   const h=e.target.dataset.h, k=e.target.dataset.k;
-  if(h!==undefined&&defaultHols[h]){defaultHols[h][k]=e.target.value;return}
+  if(h!==undefined&&defaultHols[h]){defaultHols[h][k]=e.target.value;saveSable();return}
   const r=e.target.dataset.r, rk=e.target.dataset.k;
-  if(r!==undefined&&defaultRows[r]){syncRowField(e.target)}
+  if(r!==undefined&&defaultRows[r]){syncRowField(e.target);saveSable()}
 });
 document.addEventListener("change",e=>{
-  if(e.target.dataset&&e.target.dataset.r!==undefined)syncRowField(e.target);
+  if(e.target.dataset&&e.target.dataset.r!==undefined){syncRowField(e.target);saveSable();return}
+  if(["leadWeeks","blockWeekAfter","blockNoten"].includes(e.target.id))saveSable();
 });
 document.addEventListener("click",e=>{
   const dh=e.target.dataset.delhol, dr=e.target.dataset.delrow;
-  if(dh!==undefined){defaultHols.splice(+dh,1);renderHols()}
-  if(dr!==undefined){defaultRows.splice(+dr,1);renderRows()}
+  if(dh!==undefined){defaultHols.splice(+dh,1);renderHols();saveSable()}
+  if(dr!==undefined){defaultRows.splice(+dr,1);renderRows();saveSable()}
 });
-document.getElementById("addHol").onclick=()=>{defaultHols.push({name:"New break",start:"2026-01-01",end:"2026-01-03"});renderHols()};
-document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5M",subject:"New subject",teacher:"",count:2,wd:5});renderRows()};
+document.getElementById("addHol").onclick=()=>{defaultHols.push({name:"New break",start:"2026-01-01",end:"2026-01-03"});renderHols();saveSable()};
+document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5M",subject:"New subject",teacher:"",count:2,wd:5});renderRows();saveSable()};
 
 function getHols(){return defaultHols.map(h=>({name:h.name,start:parseD(h.start),end:parseD(h.end)})).filter(h=>h.start&&h.end&&h.end>=h.start)}
 
@@ -444,13 +487,14 @@ document.addEventListener("click",e=>{
   entry.chosen=date;renderResults();
 });
 document.getElementById("genBtn").onclick=generate;
+document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all rows, holidays and dates to the example?"))resetSable()};
 document.getElementById("csvBtn").onclick=()=>{
   if(!lastPlan.length){alert("Generate dates first.");return}
   const rows=[["Class","Subject","Teacher","Exam","Date","Days since previous exam of same subject"],...lastPlan.map(p=>{const prev=lastPlan.find(q=>q.cls===p.cls&&q.subject===p.subject&&q.examNo===p.examNo-1);return[p.cls,p.subject,p.teacher,`Exam ${p.examNo}/${p.of}`,p.chosen,prev?String(gapDays(prev.chosen,p.chosen)):"first"]})];
   const blob=new Blob([rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n")],{type:"text/csv"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="sable-plan.csv";a.click();
 };
-renderHols();renderRows();
+loadSable();renderHols();renderRows();
 </script>
 </main>
 </body>
