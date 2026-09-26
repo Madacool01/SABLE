@@ -17,14 +17,14 @@ tailwind.config = {
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cabinet+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <style>
   html{scroll-behavior:smooth}
   body{background:#0B0B10;color:#F6F1E7;font-family:'Outfit',sans-serif;overflow-x:hidden}
   .glass{background:rgba(246,241,231,.08);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(246,241,231,.14)}
   .grain::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;z-index:60;
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-  .hero-wash{background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(11,11,16,.15) 0%, rgba(11,11,16,.78) 65%, #0B0B10 100%)}
+  .hero-wash{display:none}
+  .reveal-word{opacity:1}
   .marquee-track{display:flex;width:max-content;animation:marquee 26s linear infinite}
   @keyframes marquee{to{transform:translateX(-50%)}}
   .acc-slice{transition:flex .7s cubic-bezier(.22,1,.36,1)}
@@ -83,83 +83,14 @@ tailwind.config = {
 <main class="overflow-x-hidden w-full max-w-full">
 
 <!-- NAV -->
-<div class="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
-  <nav class="glass rounded-full pl-6 pr-2 py-2 flex items-center gap-6 max-w-3xl w-full md:w-auto shadow-2xl">
+<div class="sticky top-4 z-50 flex justify-center px-4 no-print">
+  <nav class="glass rounded-full pl-6 pr-6 py-2.5 flex items-center gap-3 shadow-2xl">
     <span class="font-cabinet font-black tracking-tight text-lg">SABLE <span class="text-gold font-light text-sm hidden sm:inline">Schularbeit Balanced Layout Engine</span></span>
-    <span class="hidden md:flex items-center gap-5 text-sm text-white/70">
-      <a href="#rules" class="hover:text-white">Rules</a>
-      <a href="#planner" class="hover:text-white">Planner</a>
-      <a href="#how" class="hover:text-white">How it works</a>
-    </span>
-    <a href="#planner" class="btn-gold rounded-full px-5 py-2.5 text-sm ml-auto">Plan my year</a>
   </nav>
 </div>
 
-<!-- HERO -->
-<header class="relative min-h-[96vh] flex items-center justify-center text-center overflow-hidden">
-  <img src="https://picsum.photos/seed/schoolhall/1920/1080" alt="" class="absolute inset-0 w-full h-full object-cover opacity-50 grayscale contrast-125">
-  <div class="absolute inset-0 hero-wash"></div>
-  <div class="absolute -top-32 left-1/4 w-[500px] h-[500px] rounded-full bg-gold/20 blur-[140px]"></div>
-  <div class="absolute bottom-0 right-0 w-[500px] h-[400px] rounded-full bg-clay/20 blur-[140px]"></div>
-  <div class="relative z-10 px-6 pt-28 pb-16 w-full">
-    <h1 class="w-full max-w-6xl mx-auto font-cabinet font-black leading-[1.02]" style="font-size:clamp(2.8rem,5vw,5.2rem)">
-      Exam dates that <span class="pill-img" style="background-image:url('https://picsum.photos/seed/calendar/400/200')"></span> spread themselves evenly.
-    </h1>
-    <p class="hero-sub mt-6 max-w-2xl mx-auto text-lg text-white/70 font-light">SABLE — Schularbeit Balanced Layout Engine. Type your classes, pick how many Schularbeiten each subject needs, and get fair dates that respect holidays and grade deadlines.</p>
-    <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="#planner" class="btn-gold rounded-full px-8 py-4 text-base">Create my schedule</a>
-      <a href="#how" class="btn-ghost rounded-full px-8 py-4 text-base">See how it works</a>
-    </div>
-  </div>
-</header>
-
-<!-- MARQUEE -->
-<div class="border-y border-white/10 py-5 overflow-hidden bg-white/[.02]">
-  <div class="marquee-track gap-10 text-2xl md:text-3xl font-cabinet font-bold text-white/80">
-    <span class="flex gap-10 pr-10" id="mq1"></span>
-    <span class="flex gap-10 pr-10" id="mq2"></span>
-  </div>
-</div>
-
-<!-- BENTO RULES -->
-<section id="rules" class="py-32 md:py-48 px-6">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="font-cabinet font-black text-4xl md:text-6xl max-w-4xl leading-tight">Fair dates, <span class="text-gold">without the handwork.</span></h2>
-    <p class="mt-4 text-white/60 max-w-2xl text-lg">The planner follows the rules your school already uses. You only check the result.</p>
-    <div class="mt-14 grid grid-cols-1 md:grid-cols-6 grid-flow-dense gap-5">
-      <div class="rule-card group md:col-span-4 rounded-3xl overflow-hidden relative min-h-[300px] flex items-end">
-        <img src="https://picsum.photos/seed/timetable/1200/700" class="absolute inset-0 w-full h-full object-cover grayscale opacity-70 contrast-125 transition-transform duration-700 ease-out group-hover:scale-105" alt="">
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
-        <div class="relative p-8"><h3 class="font-cabinet font-bold text-2xl">One exam per class, per week</h3><p class="text-white/70 mt-2">A class never writes two big exams in the same week. Different classes may share a week.</p></div>
-      </div>
-      <div class="rule-card md:col-span-2 rounded-3xl bg-paper text-ink p-8 flex flex-col justify-between min-h-[300px]">
-        <p class="font-cabinet font-black text-6xl">2<span class="text-2xl">days</span></p>
-        <h3 class="font-bold text-xl mt-2">No exams right after holidays</h3>
-        <p class="text-ink/60 text-sm mt-2">Blocked automatically. Full calm-down week after holidays is on by default and can be switched off.</p>
-      </div>
-      <div class="rule-card md:col-span-2 rounded-3xl bg-sage/90 text-ink p-8 flex flex-col justify-between min-h-[280px]">
-        <p class="font-cabinet font-black text-6xl">2<span class="text-2xl">wks</span></p>
-        <h3 class="font-bold text-xl mt-2">Quiet before grade deadlines</h3>
-        <p class="text-ink/60 text-sm mt-2">No exams in the 2 weeks before semester end and before summer. Dates adapt if you change them.</p>
-      </div>
-      <div class="rule-card group md:col-span-4 rounded-3xl overflow-hidden relative min-h-[280px] flex items-end">
-        <img src="https://picsum.photos/seed/library/1200/700" class="absolute inset-0 w-full h-full object-cover grayscale opacity-60 contrast-125 transition-transform duration-700 ease-out group-hover:scale-105" alt="">
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
-        <div class="relative p-8"><h3 class="font-cabinet font-bold text-2xl">Evenly spread across the year</h3><p class="text-white/70 mt-2">Exams are spaced as equally as possible. You get a best date plus nearby alternatives to choose from.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCROLL REVEAL -->
-<section class="px-6 pb-10">
-  <div class="max-w-4xl mx-auto text-center">
-    <p id="scrubText" class="font-cabinet font-bold text-3xl md:text-5xl leading-snug">You list what each subject needs. The planner finds calm weeks, spaces everything fairly, and lets you pick the final day.</p>
-  </div>
-</section>
-
 <!-- PLANNER APP -->
-<section id="planner" class="py-32 md:py-40 px-4 md:px-6">
+<section id="planner" class="pt-8 pb-16 px-4 md:px-6">
   <div class="max-w-6xl mx-auto">
     <div class="rounded-[2rem] bg-paper text-ink overflow-hidden shadow-2xl">
       <div class="grid md:grid-cols-5">
@@ -231,68 +162,16 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- HOW (horizontal accordion) -->
-<section id="how" class="py-32 md:py-48 px-6">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 items-start">
-    <div class="md:sticky md:top-32">
-      <h2 class="font-cabinet font-black text-4xl md:text-5xl leading-tight">How the planner thinks.</h2>
-      <p class="text-white/60 mt-4">Hover each panel. No jargon, just the logic your teacher would use by hand.</p>
-    </div>
-    <div class="md:col-span-2 acc-wrap flex gap-3 h-[420px]">
-      <div class="acc-slice flex-1 rounded-3xl overflow-hidden relative group min-w-0">
-        <img src="https://picsum.photos/seed/exams/800/1000" class="absolute inset-0 w-full h-full object-cover grayscale opacity-70 transition-transform duration-700 group-hover:scale-105" alt="">
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-        <div class="absolute bottom-0 p-6"><h3 class="font-bold text-xl">Find calm weeks</h3><p class="text-sm text-white/70 mt-1">Removes holidays, the 2 days after each holiday, the calm week after, and deadline quiet weeks.</p></div>
-      </div>
-      <div class="acc-slice flex-1 rounded-3xl overflow-hidden relative group min-w-0">
-        <img src="https://picsum.photos/seed/spacing/800/1000" class="absolute inset-0 w-full h-full object-cover grayscale opacity-70 transition-transform duration-700 group-hover:scale-105" alt="">
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-        <div class="absolute bottom-0 p-6"><h3 class="font-bold text-xl">Space evenly</h3><p class="text-sm text-white/70 mt-1">Spreads each subject across the calm weeks so gaps are as equal as possible.</p></div>
-      </div>
-      <div class="acc-slice flex-1 rounded-3xl overflow-hidden relative group min-w-0">
-        <img src="https://picsum.photos/seed/choice/800/1000" class="absolute inset-0 w-full h-full object-cover grayscale opacity-70 transition-transform duration-700 group-hover:scale-105" alt="">
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-        <div class="absolute bottom-0 p-6"><h3 class="font-bold text-xl">Offer choices</h3><p class="text-sm text-white/70 mt-1">Shows nearby free weeks per exam so teachers decide the final day together.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER CTA -->
-<footer class="px-6 pb-10">
-  <div class="max-w-6xl mx-auto rounded-[2rem] bg-gold text-ink p-10 md:p-20 text-center relative overflow-hidden">
-    <h2 class="font-cabinet font-black leading-none" style="font-size:clamp(2.4rem,5vw,4.5rem)">Ready for a calm exam year?</h2>
-    <p class="mt-4 text-ink/60 max-w-xl mx-auto">Print the suggestion, discuss it in the staff room, click alternatives where needed. Done.</p>
-    <a href="#planner" class="inline-block mt-8 bg-ink text-paper rounded-full px-10 py-4 font-bold">Back to planner</a>
-  </div>
-  <p class="text-center text-white/30 text-xs mt-8">SABLE Prototype 1 — Schularbeit Balanced Layout Engine. Holidays, deadlines and even spacing only. Trips and teacher absence come next.</p>
+<footer class="px-6 pb-10 no-print">
+  <p class="text-center text-white/30 text-xs">SABLE — one exam per class per week, evenly spread, no post-holiday or deadline weeks.</p>
 </footer>
 <div id="sableCalBack"></div>
 <div id="sableCal" role="dialog" aria-label="Choose a date"><div class="cal-head"><button class="cal-nav" id="calPrev" type="button">‹</button><div class="cal-title" id="calTitle">Month Year</div><button class="cal-nav" id="calNext" type="button">›</button></div><div id="calBody"></div><div class="cal-foot"><button id="calToday" type="button">Today</button><button id="calClose" type="button">Done</button></div></div>
 </main>
 
 <script>
-gsap.registerPlugin(ScrollTrigger);
-// Marquee content
-(function(){
-  const items = ["Even spacing","No post-holiday stress","Quiet before deadlines","One per week per class","Teacher picks final"];
-  const html = items.map(t=>`<span class="whitespace-nowrap">${t}</span><span class="text-gold">•</span>`).join("");
-  document.getElementById("mq1").innerHTML = html; document.getElementById("mq2").innerHTML = html;
-})();
-// Hero entrance
-gsap.from("header h1",{y:60,opacity:0,duration:1.2,ease:"power3.out"});
-gsap.from(".hero-sub",{y:30,opacity:0,duration:1,delay:.3,ease:"power3.out"});
-// Image scale + fade on scroll
-gsap.utils.toArray(".rule-card img").forEach(img=>{
-  gsap.fromTo(img,{scale:.85},{scale:1,ease:"none",scrollTrigger:{trigger:img,scrub:true,start:"top bottom",end:"center center"}});
-});
-// Scrub text reveal
-(function(){
-  const el = document.getElementById("scrubText");
-  const words = el.textContent.trim().split(/\s+/);
-  el.innerHTML = words.map(w=>`<span class="reveal-word">${w}</span>`).join("");
-  gsap.to(".reveal-word",{opacity:1,stagger:.06,ease:"none",scrollTrigger:{trigger:el,start:"top 80%",end:"bottom 45%",scrub:true}});
-})();
+// Planner entrance
+if(window.gsap) gsap.from("#planner .rounded-\\[2rem\\]",{y:24,opacity:0,duration:.8,ease:"power3.out"});
 
 // ---------- SABLE custom date picker (year / month / day, animated) ----------
 const sableCal = document.getElementById("sableCal");
