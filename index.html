@@ -390,18 +390,23 @@ function generate(){
   statLine.textContent = `${calm.length} calm weeks found · ${lastPlan.length} exams placed`;
   renderResults();
 }
+function gapDays(aISO,bISO){return Math.round((parseD(bISO)-parseD(aISO))/86400000)}
 function renderResults(){
   if(!lastPlan.length){resultsEl.innerHTML=`<p class="text-white/40">Nothing fits. Loosen a rule or add weeks.</p>`;return}
   const byCls={};lastPlan.forEach(p=>{(byCls[p.cls]=byCls[p.cls]||[]).push(p)});
   resultsEl.innerHTML=Object.entries(byCls).map(([cls,items])=>`
     <div class="rounded-2xl border border-white/12 overflow-hidden">
       <div class="px-5 py-4 bg-white/5 flex items-center justify-between"><strong class="font-cabinet text-lg">Class ${esc(cls)}</strong><span class="text-xs text-white/50">${items.length} exams</span></div>
-      <div class="divide-y divide-white/10">${items.map((p,i)=>`
+      <div class="divide-y divide-white/10">${items.map((p,i)=>{
+        const prev=lastPlan.find(q=>q.cls===p.cls&&q.subject===p.subject&&q.examNo===p.examNo-1);
+        const gap=prev?gapDays(prev.chosen,p.chosen):null;
+        const gapLine=prev?`<p class="text-xs text-white/50 mt-1">+${gap} days after previous ${esc(p.subject)} exam (${fmt(parseD(prev.chosen))})</p>`:`<p class="text-xs text-white/50 mt-1">First ${esc(p.subject)} exam of the year</p>`;
+        return `
         <div class="px-5 py-4 grid md:grid-cols-3 gap-3 items-center">
           <div><p class="font-semibold">${esc(p.subject)} <span class="text-white/40 font-normal">· exam ${p.examNo}/${p.of}</span></p><p class="text-xs text-white/50">${esc(p.teacher||"Teacher to confirm")}</p></div>
-          <div class="text-sm font-bold text-gold" id="ch-${cls}-${i}">${fmt(parseD(p.chosen))}</div>
+          <div><div class="text-sm font-bold text-gold" id="ch-${cls}-${i}">${fmt(parseD(p.chosen))}</div>${gapLine}</div>
           <div class="flex flex-wrap gap-2">${p.options.map(o=>`<button class="alt-pill ${o.date===p.chosen?"active":""}" data-pick="${cls}|${p.subject}|${p.examNo}" data-date="${o.date}">${o.label}</button>`).join("")}</div>
-        </div>`).join("")}</div>
+        </div>`}).join("")}</div>
     </div>`).join("");
 }
 document.addEventListener("click",e=>{
@@ -417,7 +422,7 @@ document.addEventListener("click",e=>{
 document.getElementById("genBtn").onclick=generate;
 document.getElementById("csvBtn").onclick=()=>{
   if(!lastPlan.length){alert("Generate dates first.");return}
-  const rows=[["Class","Subject","Teacher","Exam","Date"],...lastPlan.map(p=>[p.cls,p.subject,p.teacher,`Exam ${p.examNo}/${p.of}`,p.chosen])];
+  const rows=[["Class","Subject","Teacher","Exam","Date","Days since previous exam of same subject"],...lastPlan.map(p=>{const prev=lastPlan.find(q=>q.cls===p.cls&&q.subject===p.subject&&q.examNo===p.examNo-1);return[p.cls,p.subject,p.teacher,`Exam ${p.examNo}/${p.of}`,p.chosen,prev?String(gapDays(prev.chosen,p.chosen)):"first"]})];
   const blob=new Blob([rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n")],{type:"text/csv"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="sable-plan.csv";a.click();
 };
