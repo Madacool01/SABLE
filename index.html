@@ -185,9 +185,12 @@ tailwind.config = {
             <label class="text-xs font-semibold">Semester ends<span class="sable-date-wrap"><input type="text" readonly id="semEnd" data-iso="2026-02-15" value="15 Feb 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
             <label class="text-xs font-semibold">Summer break starts<span class="sable-date-wrap"><input type="text" readonly id="sumStart" data-iso="2026-07-08" value="08 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 items-end">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 items-end">
             <label class="text-xs font-semibold">Exam weekday
               <select id="weekday" class="!text-ink !bg-white !border-ink/15"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5" selected>Friday</option></select>
+            </label>
+            <label class="text-xs font-semibold">Teaching weeks before first exam
+              <select id="leadWeeks" class="!text-ink !bg-white !border-ink/15"><option value="2">2 weeks</option><option value="3">3 weeks</option><option value="4" selected>4 weeks</option><option value="5">5 weeks</option><option value="6">6 weeks</option></select>
             </label>
             <label class="flex items-center gap-2 text-sm col-span-1"><input type="checkbox" id="blockWeekAfter" checked class="!w-5"> Calm week after holidays</label>
             <label class="flex items-center gap-2 text-sm col-span-1"><input type="checkbox" id="blockNoten" checked class="!w-5"> Quiet 2 weeks before deadlines</label>
@@ -429,7 +432,7 @@ function buildWeeks(){
   const s=parseD(getISO("schoolStart")), e=parseD(getISO("schoolEnd"));
   const wd=+document.getElementById("weekday").value;
   const weeks=[];let m=mondayOf(s);
-  while(m<=e){const exam=new Date(m);exam.setDate(m.getDate()+(wd-1));weeks.push({monday:new Date(m),exam});m.setDate(m.getDate()+7)}
+  while(m<=e){const exam=new Date(m);exam.setDate(m.getDate()+(wd-1));exam.setHours(0,0,0,0);if(exam>=s&&exam<=e)weeks.push({monday:new Date(m),exam});m.setDate(m.getDate()+7)}
   return {weeks,range:{s,e}};
 }
 function weekStatus(examDate,hols,semEnd,sumStart,blockWeekAfter,blockNoten){
@@ -452,34 +455,57 @@ function generate(){
   const hols=getHols();
   const semEnd=parseD(getISO("semEnd")), sumStart=parseD(getISO("sumStart"));
   const blockWeekAfter=document.getElementById("blockWeekAfter").checked, blockNoten=document.getElementById("blockNoten").checked;
-  const {weeks}=buildWeeks();
-  const annotated=weeks.map(w=>({...w,...weekStatus(w.exam,hols,semEnd,sumStart,blockWeekAfter,blockNoten)}));
+  const leadWeeks=+document.getElementById("leadWeeks").value||4;
+  const {weeks,range}=buildWeeks();
+  const leadCutoff=new Date(range.s);leadCutoff.setDate(leadCutoff.getDate()+leadWeeks*7);
+  const annotated=weeks.map(w=>{
+    if(w.exam<leadCutoff)return{...w,blocked:true,hard:true,reason:"Teaching time — only week "+Math.max(1,Math.ceil((w.exam-range.s)/86400000/7))+" of school"};
+    return{...w,...weekStatus(w.exam,hols,semEnd,sumStart,blockWeekAfter,blockNoten)};
+  });
   const calm=annotated.filter(w=>!w.blocked);
   const byClass={};
   defaultRows.forEach((r,idx)=>{const c=(r.cls||"Class").trim()||"Class";(byClass[c]=byClass[c]||[]).push({...r,idx})});
   lastPlan=[];const warns=[];
   for(const [cls,rows] of Object.entries(byClass)){
-    const occupied=new Set();
     const total=rows.reduce((a,r)=>a+ +r.count,0);
     if(calm.length<total)warns.push(`<strong>${esc(cls)}</strong> needs ${total} exams but only ${calm.length} calm weeks exist. Reduce counts or open more weeks.`);
-    for(const row of rows){
-      const n=+row.count;
-      const free=calm.filter(w=>!occupied.has(dstr(w.exam)));
-      if(free.length<n){warns.push(`<strong>${esc(cls)} / ${esc(row.subject)}</strong>: only ${free.length} free weeks left for ${n} exams.`);continue}
-      const picks=[];
+    // Pool every exam of every subject: each subject's exams get ideal slots
+    // spread evenly over the whole calm range, then all ideals are merged and
+    // sorted so subjects interleave (math, english, math...) instead of
+    // running one subject fully before the next.
+    const M=calm.length;
+    const pool=[];
+    rows.forEach(row=>{
+      const n=+row.count||0;
       for(let i=0;i<n;i++){
-        const idealPos=n===1?Math.floor(free.length/2):Math.round(i*(free.length-1)/(n-1));
-        let best=null,bd=1e9;
-        free.forEach((w,wi)=>{if(picks.includes(w))return;const d=Math.abs(wi-idealPos);if(d<bd){bd=d;best=w}});
-        picks.push(best);occupied.add(dstr(best.exam));
+        const ideal=n===1?(M-1)/2:(i*(M-1)/(n-1));
+        pool.push({row,examNo:i+1,of:n,ideal});
       }
-      picks.sort((a,b)=>a.exam-b.exam);
-      picks.forEach((w,k)=>{
-        const alts=calm.filter(x=>!occupied.has(dstr(x.exam))||x===w).sort((a,b)=>Math.abs(a.exam-w.exam)-Math.abs(b.exam-w.exam)).slice(0,4).sort((a,b)=>a.exam-b.exam);
-        if(!alts.includes(w))alts.push(w);
-        lastPlan.push({cls,subject:row.subject,teacher:row.teacher,examNo:k+1,of:n,chosen:dstr(w.exam),options:alts.map(a=>({date:dstr(a.exam),label:fmt(a.exam)}))});
+    });
+    pool.sort((a,b)=>(a.ideal-b.ideal)||(a.of-b.of)||(a.row.subject<b.row.subject?-1:1));
+    const occupied=new Set();
+    const placed=[];
+    for(const item of pool){
+      let best=null,bd=1e9;
+      calm.forEach((w,wi)=>{
+        if(occupied.has(dstr(w.exam)))return;
+        const d=Math.abs(wi-item.ideal);
+        if(d<bd||(d===bd&&best&&w.exam<best.exam)){bd=d;best=w}
       });
+      if(!best){warns.push(`<strong>${esc(cls)} / ${esc(item.row.subject)}</strong>: no free week left for exam ${item.examNo}/${item.of}.`);continue}
+      occupied.add(dstr(best.exam));
+      placed.push({...item,week:best});
     }
+    placed.sort((a,b)=>a.week.exam-b.week.exam);
+    // Renumber per subject chronologically so exam 1..n follows date order
+    const counters={};
+    placed.forEach(p=>{
+      const key=p.row.subject;counters[key]=(counters[key]||0)+1;
+      const examNo=counters[key];
+      const alts=calm.filter(x=>!occupied.has(dstr(x.exam))||x===p.week).sort((a,b)=>Math.abs(a.exam-p.week.exam)-Math.abs(b.exam-p.week.exam)).slice(0,4).sort((a,b)=>a.exam-b.exam);
+      if(!alts.includes(p.week))alts.push(p.week);
+      lastPlan.push({cls,subject:p.row.subject,teacher:p.row.teacher,examNo,of:p.of,chosen:dstr(p.week.exam),options:alts.map(a=>({date:dstr(a.exam),label:fmt(a.exam)}))});
+    });
   }
   if(warns.length){warnBox.classList.remove("hidden");warnBox.innerHTML=warns.join("<br>")}else{warnBox.classList.add("hidden");warnBox.innerHTML=""}
   statLine.textContent = `${calm.length} calm weeks found · ${lastPlan.length} exams placed`;
