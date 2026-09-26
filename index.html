@@ -93,23 +93,15 @@ tailwind.config = {
 <section id="planner" class="pt-8 pb-16 px-4 md:px-6">
   <div class="max-w-6xl mx-auto">
     <div class="rounded-[2rem] bg-paper text-ink overflow-hidden shadow-2xl">
-      <div class="grid md:grid-cols-5">
-        <div class="md:col-span-2 relative min-h-[280px]">
-          <img src="https://picsum.photos/seed/mountainlake/900/1100" class="absolute inset-0 w-full h-full object-cover contrast-125" alt="">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10"></div>
-          <div class="relative p-8 md:p-10 flex flex-col justify-end h-full min-h-[280px]">
-            <h2 class="text-white font-cabinet font-black text-3xl md:text-4xl leading-tight">Build your year in three steps.</h2>
-            <ol class="mt-4 text-white/80 space-y-2 text-[.95rem]">
-              <li><strong class="text-white">1. Check dates</strong> — school year, holidays, deadlines.</li>
-              <li><strong class="text-white">2. List exams</strong> — class, subject, teacher, count, lesson day.</li>
-              <li><strong class="text-white">3. Pick finals</strong> — accept the suggestion or click an alternative.</li>
-            </ol>
-            <div id="statLine" class="mt-6 inline-flex items-center gap-3 text-sm bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white w-fit">Ready when you are.</div>
+      <div>
+        <div class="p-6 md:p-10">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 class="font-cabinet font-bold text-xl">School dates</h3>
+              <p class="text-ink/55 text-sm">Change anything. Everything recalculates.</p>
+            </div>
+            <div id="statLine" class="inline-flex items-center gap-3 text-sm bg-ink text-paper rounded-full px-4 py-2 w-fit">Ready when you are.</div>
           </div>
-        </div>
-        <div class="md:col-span-3 p-6 md:p-10">
-          <h3 class="font-cabinet font-bold text-xl">School dates</h3>
-          <p class="text-ink/55 text-sm">Change anything. Everything recalculates.</p>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
             <label class="text-xs font-semibold">First school day<span class="sable-date-wrap"><input type="text" readonly id="schoolStart" data-iso="2025-09-14" value="14 Sep 2025" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
             <label class="text-xs font-semibold">Last school day<span class="sable-date-wrap"><input type="text" readonly id="schoolEnd" data-iso="2026-07-08" value="08 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
