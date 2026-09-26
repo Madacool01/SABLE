@@ -41,9 +41,13 @@ tailwind.config = {
   .btn-ghost{border:1px solid rgba(246,241,231,.3);color:#F6F1E7}
   .btn-ghost:hover{background:rgba(246,241,231,.12)}
   .pill-img{display:inline-block;height:.9em;width:2.2em;border-radius:999px;vertical-align:baseline;background-size:cover;background-position:center;margin:0 .15em;transform:translateY(.08em)}
-  table.plan{width:100%;border-collapse:separate;border-spacing:0}
-  table.plan th{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(246,241,231,.55);text-align:left;padding:.6rem .75rem}
-  table.plan td{padding:.5rem .75rem;border-top:1px solid rgba(246,241,231,.1)}
+  table.plan{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+  table.plan th{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(246,241,231,.55);text-align:left;padding:.6rem .75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  table.plan td{padding:.45rem .5rem;border-top:1px solid rgba(246,241,231,.1);vertical-align:middle}
+  table.plan td input{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:.55rem .55rem .55rem .9rem!important;text-overflow:ellipsis;overflow:hidden}
+  table.plan td:last-child{width:64px;text-align:center}
+  .table-scroll{overflow-x:auto}
+  .table-scroll table.plan{min-width:560px}
   .alt-pill{border:1px solid rgba(246,241,231,.2);border-radius:999px;padding:.25rem .65rem;font-size:.78rem;cursor:pointer;transition:all .25s}
   .alt-pill:hover{border-color:#E8C15A}
   .alt-pill.active{background:#E8C15A;color:#14100A;border-color:#E8C15A;font-weight:700}
@@ -193,7 +197,7 @@ tailwind.config = {
               <h3 class="font-cabinet font-bold text-xl">Holidays <span class="text-sm font-normal text-ink/50">(tap a date to open the calendar)</span></h3>
               <button id="addHol" class="text-sm font-bold underline underline-offset-4">+ Add holiday</button>
             </div>
-            <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden">
+            <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden table-scroll">
               <table class="plan !text-ink"><thead><tr class="!text-ink/50"><th>Name</th><th>From</th><th>To</th><th></th></tr></thead><tbody id="holBody"></tbody></table>
             </div>
           </div>
@@ -202,7 +206,7 @@ tailwind.config = {
               <h3 class="font-cabinet font-bold text-xl">What needs exams?</h3>
               <button id="addRow" class="text-sm font-bold underline underline-offset-4">+ Add row</button>
             </div>
-            <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden">
+            <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden table-scroll">
               <table class="plan !text-ink"><thead><tr><th>Class</th><th>Subject</th><th>Teacher</th><th>Count</th><th></th></tr></thead><tbody id="rowBody"></tbody></table>
             </div>
             <p class="text-xs text-ink/50 mt-2">Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.</p>
