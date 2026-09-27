@@ -344,10 +344,10 @@
 
   <!-- ============ PLAIN ENGLISH ============ -->
   <section>
-    <h2 class="plain">How to explain this in one breath</h2>
+    <h2 class="plain">The rule in one paragraph</h2>
     <div class="quote">
       <p>Each exam is assigned a target position between 0 and 1 across the school year, which is then converted into an index into that exam's own list of allowed dates — one weekday list for fixed mode, all weekdays for Auto, or a different weekday per exam for split mode. All exams from all subjects in a class are sorted by that target position, so they get placed in chronological order and different subjects naturally interleave. Each one then claims the nearest free week from its own list, and since claimed weeks are removed from the pool, the one-exam-per-class-per-week rule is satisfied automatically.</p>
-      <div class="attr">SABLE — the placement rule in plain language (flexible-days edition)</div>
+      <div class="attr">SABLE — the placement rule, briefly</div>
     </div>
   </section>
 
@@ -356,7 +356,7 @@
     <div class="step"><span class="num gold">6</span><h2>Flexible days: what changes per case</h2></div>
     <table>
       <caption>Same engine, different candidate lists</caption>
-      <thead><tr><th>Case</th><th>Teacher picks</th><th>Candidate list per exam</th><th>Spread quality</th></tr></thead>
+      <thead><tr><th>Case</th><th>Day setting</th><th>Candidate list per exam</th><th>Spread quality</th></tr></thead>
       <tbody>
         <tr><td><strong>A · Fixed</strong></td><td>One weekday (e.g. Wed)</td><td class="num">~26 dates, 1 per week</td><td>Even, constrained to that weekday</td></tr>
         <tr class="hi"><td><strong>B · ✨ Auto</strong></td><td>“I don't care — optimize it”</td><td class="num">~130 dates, 5 per week</td><td><strong>Most even</strong> — smallest distance to ideal</td></tr>
@@ -372,8 +372,75 @@
       <p>Error is measured as <code>|chosen index − ideal index|</code>. With 5× more candidates, the nearest free date is on average 5× closer to the ideal. Fixed exams can only slide whole weeks; Auto exams can also slide <em>within</em> the week (Tue instead of Wed) to dodge a blocked week without losing evenness.</p>
     </div>
     <div class="callout sage">
-      <span class="tag">Example to try in the app</span>
-      <p>Set Math to <strong>✨ Auto ×4</strong> and English to <strong>split ×3 → Mon / Thu / Auto</strong>, then press Generate. Math will land within a day or two of its ideal positions, English 1 stays Monday, English 2 stays Thursday, English 3 (Auto) fills whichever weekday keeps the class clash-free.</p>
+      <span class="tag">Same setup in the planner</span>
+      <p>Math set to <strong>✨ Auto ×4</strong> and English to <strong>split ×3 → Mon / Thu / Auto</strong>, then Generate. Math lands within a day or two of its ideal positions, English 1 stays Monday, English 2 stays Thursday, English 3 (Auto) fills whichever weekday keeps the class clash-free.</p>
+    </div>
+  </section>
+
+  <!-- ============ WORKED EXAMPLE: SPLIT + FIXED ============ -->
+  <section>
+    <div class="step"><span class="num">7</span><h2>Worked example: split Math days + fixed Friday English</h2></div>
+    <p>One class (5M), two rows. Math uses a <strong>different day per exam</strong> — 1st Monday, 2nd Tuesday, 3rd Wednesday, 4th Monday — and English uses <strong>fixed Fridays ×3</strong>. The key point: there is no single combined Mon/Tue/Wed list. Each exam gets <em>its own</em> calm-date list and searches only there.</p>
+
+    <table>
+      <caption>Step 1 — one calm-date list per exam</caption>
+      <thead><tr><th>Exam</th><th>Day setting</th><th class="num">Calm dates</th></tr></thead>
+      <tbody>
+        <tr><td>Math 1 / 4</td><td>Monday</td><td class="num">~26 Mondays, index 0…25</td></tr>
+        <tr><td>Math 2 / 4</td><td>Tuesday</td><td class="num">~26 Tuesdays, index 0…25</td></tr>
+        <tr><td>Math 3 / 4</td><td>Wednesday</td><td class="num">~26 Wednesdays, index 0…25</td></tr>
+        <tr><td>Math 4 / 4</td><td>Monday</td><td class="num">~26 Mondays, index 0…25</td></tr>
+        <tr><td>English 1–3 / 3</td><td>Friday (fixed)</td><td class="num">~25 Fridays, index 0…24</td></tr>
+      </tbody>
+    </table>
+    <p>All five lists pass through the same filters: teaching buffer, holidays, calm week after breaks, quiet 2 weeks before deadlines. A blocked Wednesday only removes that Wednesday — the Monday and Tuesday lists are unaffected.</p>
+
+    <table>
+      <caption>Step 2 — each fraction indexes into its own list</caption>
+      <thead><tr><th>Exam</th><th class="num">Fraction</th><th class="num">Target index</th></tr></thead>
+      <tbody>
+        <tr><td>Math 1 / 4</td><td class="num">0.000</td><td class="num">0 (Mon list)</td></tr>
+        <tr><td>Math 2 / 4</td><td class="num">0.333</td><td class="num">~8 (Tue list)</td></tr>
+        <tr><td>Math 3 / 4</td><td class="num">0.667</td><td class="num">~17 (Wed list)</td></tr>
+        <tr><td>Math 4 / 4</td><td class="num">1.000</td><td class="num">25 (Mon list)</td></tr>
+        <tr><td>English 1 / 3</td><td class="num">0.000</td><td class="num">0 (Fri list)</td></tr>
+        <tr><td>English 2 / 3</td><td class="num">0.500</td><td class="num">12 (Fri list)</td></tr>
+        <tr><td>English 3 / 3</td><td class="num">1.000</td><td class="num">24 (Fri list)</td></tr>
+      </tbody>
+    </table>
+
+    <table>
+      <caption>Step 3 — one shared queue, sorted by fraction</caption>
+      <thead><tr><th>#</th><th>Exam</th><th class="num">Fraction</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>English 1 / 3</td><td class="num">0.000</td></tr>
+        <tr><td class="num">2</td><td>Math 1 / 4</td><td class="num">0.000</td></tr>
+        <tr><td class="num">3</td><td>Math 2 / 4</td><td class="num">0.333</td></tr>
+        <tr><td class="num">4</td><td>English 2 / 3</td><td class="num">0.500</td></tr>
+        <tr><td class="num">5</td><td>Math 3 / 4</td><td class="num">0.667</td></tr>
+        <tr><td class="num">6</td><td>English 3 / 3</td><td class="num">1.000</td></tr>
+        <tr><td class="num">7</td><td>Math 4 / 4</td><td class="num">1.000</td></tr>
+      </tbody>
+    </table>
+    <p>Ties on fraction go to the subject with fewer exams first — English (of 3) before Math (of 4). That is why English 1/3 is placed before Math 1/4.</p>
+
+    <div class="card">
+      <h3>Step 4 — placement, week by week</h3>
+      <ol class="walk">
+        <li><span class="who">English 1/3</span> wants Friday index 0 → claims the <span class="where">first calm Friday</span><span class="note">That Monday-week is now occupied for class 5M.</span></li>
+        <li><span class="who">Math 1/4</span> wants Monday index 0 → claims the <span class="where">first free Monday</span><span class="note">If it is the same week as English 1, it slides one Monday later — only Math 1 moves.</span></li>
+        <li><span class="who">Math 2/4</span> wants Tuesday index ~8 → claims the <span class="where">nearest free Tuesday</span><span class="note">Scans only Tuesdays; Mondays and Wednesdays are irrelevant to it.</span></li>
+        <li><span class="who">English 2/3</span> wants Friday index 12 → claims the <span class="where">mid-year Friday</span><span class="note">Exact fit unless that week was taken.</span></li>
+        <li><span class="who">Math 3/4</span> wants Wednesday index ~17 → claims the <span class="where">nearest free Wednesday</span><span class="note">A blocked Wednesday (e.g. holiday) only affects this exam.</span></li>
+        <li><span class="who">English 3/3</span> wants Friday index 24 → claims the <span class="where">last calm Friday</span></li>
+        <li><span class="who">Math 4/4</span> wants Monday index 25 → claims the <span class="where">last calm Monday</span><span class="note">If English 3 took that week, Math 4 slides one Monday — its number stays “Exam 4”.</span></li>
+      </ol>
+      <p>Occupancy is keyed by <strong>Monday-week</strong>, so a Monday Math exam and a Friday English exam can never share a week — even though they never share a weekday.</p>
+    </div>
+
+    <div class="callout">
+      <span class="tag">Numbering in this example</span>
+      <p>Math keeps its authored numbers: Exam 1 is always the Monday exam, Exam 2 always Tuesday, Exam 3 always Wednesday, Exam 4 always Monday — even if a clash reorders dates. English, as a single-day row, is numbered chronologically so exams 1–3 follow date order. The result view marks each exam with its day (<code>Mon…Fri</code> or <code>✨ Auto</code>).</p>
     </div>
   </section>
 
