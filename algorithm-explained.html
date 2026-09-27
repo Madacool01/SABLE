@@ -195,13 +195,17 @@
   <!-- ============ INTRO ============ -->
   <section>
     <p class="lead">SABLE has to answer one question: <strong>which allowed week should each exam get?</strong> It must spread exams evenly, stop two exams in the same class from ever landing in the same week, and keep every exam clear of holidays and deadline periods.</p>
-    <p>The example below uses the app's default settings. Because those defaults are <em>Math ×4 on Wednesday</em> and <em>English ×3 on Thursday</em> in class 5M, the worked trace and the running app agree exactly — every number here was produced by the real code.</p>
+    <p>The worked example below uses fixed weekdays — <em>Math ×4 on Wednesday</em> and <em>English ×3 on Thursday</em> in class 5M — so you can trace every number by hand. Since the update, each row can also use <strong>✨ Auto (any Mon–Fri, most even spread)</strong> or <strong>split days per exam</strong> (e.g. 1st = Monday, 2nd = Wednesday). The core rule never changes: every single exam gets its <em>own</em> calm-date list, a target position, and then claims its nearest free week.</p>
+    <div class="callout sage">
+      <span class="tag">Three day modes · one engine</span>
+      <p><strong>Case A — Fixed:</strong> one weekday per row (e.g. always Wednesday). <strong>Case B — Auto:</strong> any Mon–Fri, about 5× more dates, therefore the most even spread. <strong>Case C — Per exam:</strong> exam 1 = Monday, exam 2 = Wednesday, exam 3 = Auto … each exam searches only its own weekday list.</p>
+    </div>
   </section>
 
   <!-- ============ STEP 1: CALM DATES ============ -->
   <section>
     <div class="step"><span class="num gold">1</span><h2>Find the “calm” dates</h2></div>
-    <p>The first job is to throw away every week an exam is not allowed to use. Only the subject's own lesson weekday counts — Math only ever uses Wednesdays, English only Thursdays.</p>
+    <p>The first job is to throw away every week an exam is not allowed to use. Which weekday counts depends on the day mode — the function <code>candidatesFor(wd, …)</code> builds one list per exam, and <code>wantDay(row, i)</code> tells it which weekday exam <code>i</code> wants (<code>0 = ✨ Auto</code>, <code>1–5 = Mon–Fri</code>).</p>
 
     <div class="card">
       <h3>What disqualifies a date</h3>
@@ -213,10 +217,18 @@
       </div>
     </div>
 
-    <p>After filtering, the two subjects are left with nearly identical lists:</p>
+    <p>After filtering, the two subjects are left with nearly identical lists (Case A — fixed weekday):</p>
     <div class="grid3">
       <div class="card stat"><div class="k">Math · Wednesdays</div><div class="v">26</div><div class="n">calm dates available</div></div>
       <div class="card stat"><div class="k">English · Thursdays</div><div class="v">25</div><div class="n">calm dates available</div></div>
+      <div class="card stat"><div class="k">✨ Auto · any Mon–Fri</div><div class="v">~5×</div><div class="n">all calm weekdays — most even spread</div></div>
+    </div>
+
+    <div class="card">
+      <h3>How the three cases build candidates</h3>
+      <p><strong>Case A — Fixed (<code>wd = 3</code>):</strong> take every Monday of the year, add <code>wd − 1</code> days to reach Wednesday, keep the date only if it is inside the school year, past the teaching buffer, and its week is not blocked. Result: one date per week, e.g. 26 Wednesdays.</p>
+      <p><strong>Case B — Auto (<code>wd = 0</code>):</strong> same filters, but emit <em>all five</em> weekdays per Monday. Result: about five dates per week (e.g. ~130 calm days). More choice means the greedy step lands closer to its ideal position — that is why Auto spreads most evenly.</p>
+      <p><strong>Case C — Per exam (<code>row.wds = [1, 3, 0]</code>):</strong> exam 1 builds a Monday-only list, exam 2 a Wednesday-only list, exam 3 an Auto list. The engine stores <code>candsByExam[row][examIndex]</code> — a separate list per exam, not one list per row.</p>
     </div>
 
     <div class="callout sage">
@@ -228,7 +240,7 @@
   <!-- ============ STEP 2: TARGET POSITION ============ -->
   <section>
     <div class="step"><span class="num">2</span><h2>Give every exam a target position</h2></div>
-    <p>Each exam gets a <strong>target fraction</strong> between 0 (start of year) and 1 (end of year). With <code>n</code> exams the fractions are simply <code>0, 1/(n−1), 2/(n−1) … 1</code>. That fraction is then converted into an <strong>index</strong> into the subject's own list of calm dates.</p>
+    <p>Each exam gets a <strong>target fraction</strong> between 0 (start of year) and 1 (end of year). With <code>n</code> exams the fractions are simply <code>0, 1/(n−1), 2/(n−1) … 1</code>. That fraction is then converted into an <strong>index into that exam's own list</strong>: <code>idealIdx = fraction × (list.length − 1)</code>. A fixed-Wednesday exam indexes into 26 dates, an Auto exam into ~130, a per-exam Monday into ~26 — the formula is identical, only the list differs.</p>
 
     <table>
       <caption>Math — 4 exams across 26 calm Wednesdays</caption>
@@ -282,7 +294,7 @@
   <!-- ============ STEP 4: GREEDY PLACEMENT ============ -->
   <section>
     <div class="step"><span class="num gold">4</span><h2>Place each exam on its nearest free week</h2></div>
-    <p>Walk the queue top to bottom. For each exam, scan every still-free date, measure the distance <code>|index − target|</code>, and claim the smallest. A claimed week is removed from the pool for good — which is exactly what enforces “one exam per class per week”.</p>
+    <p>Walk the queue top to bottom. For each exam, scan <em>its own</em> still-free dates, measure the distance <code>|index − target|</code>, and claim the smallest. A claimed week (keyed by its Monday) is removed from the pool for good — which is exactly what enforces “one exam per class per week”, no matter which weekdays the exams wanted. An Auto exam can dodge into Tuesday to avoid a clash; a fixed Wednesday exam can only slide to another Wednesday.</p>
 
     <ol class="walk">
       <li><span class="who">English 1/3</span> wants index 0.00 → claims <span class="where">index 0 · Thu 16 Oct</span><span class="note">Exact fit.</span></li>
@@ -334,14 +346,40 @@
   <section>
     <h2 class="plain">How to explain this in one breath</h2>
     <div class="quote">
-      <p>Each exam is assigned a target position between 0 and 1 across the school year, which is then converted into an index into that subject's list of allowed dates. All exams from all subjects in a class are sorted by that target position, so they get placed in chronological order and different subjects naturally interleave. Each one then claims the nearest free week, and since claimed weeks are removed from the pool, the one-exam-per-class-per-week rule is satisfied automatically.</p>
-      <div class="attr">SABLE — the placement rule in plain language</div>
+      <p>Each exam is assigned a target position between 0 and 1 across the school year, which is then converted into an index into that exam's own list of allowed dates — one weekday list for fixed mode, all weekdays for Auto, or a different weekday per exam for split mode. All exams from all subjects in a class are sorted by that target position, so they get placed in chronological order and different subjects naturally interleave. Each one then claims the nearest free week from its own list, and since claimed weeks are removed from the pool, the one-exam-per-class-per-week rule is satisfied automatically.</p>
+      <div class="attr">SABLE — the placement rule in plain language (flexible-days edition)</div>
+    </div>
+  </section>
+
+  <!-- ============ FLEXIBLE DAYS ============ -->
+  <section>
+    <div class="step"><span class="num gold">6</span><h2>Flexible days: what changes per case</h2></div>
+    <table>
+      <caption>Same engine, different candidate lists</caption>
+      <thead><tr><th>Case</th><th>Teacher picks</th><th>Candidate list per exam</th><th>Spread quality</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A · Fixed</strong></td><td>One weekday (e.g. Wed)</td><td class="num">~26 dates, 1 per week</td><td>Even, constrained to that weekday</td></tr>
+        <tr class="hi"><td><strong>B · ✨ Auto</strong></td><td>“I don't care — optimize it”</td><td class="num">~130 dates, 5 per week</td><td><strong>Most even</strong> — smallest distance to ideal</td></tr>
+        <tr><td><strong>C · Per exam</strong></td><td>Exam 1 = Mon, 2 = Wed, 3 = Auto …</td><td class="num">Each exam its own list</td><td>Even within each wish; Auto exams absorb clashes</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <span class="tag">Numbering rule</span>
+      <p><strong>Single-day rows (A + B)</strong> are renumbered chronologically after placement, so exam 1..n always follows date order — a collision that pushes an exam a week late simply swaps its number. <strong>Per-exam rows (C)</strong> keep their authored numbers, because “Exam 1 = Monday, Exam 2 = Wednesday” must stay tied to the right date even if placement order shifts. The app shows the wish next to each result as a gold chip (<code>✨ Auto</code> or <code>Mon…Fri</code>).</p>
+    </div>
+    <div class="callout clay">
+      <span class="tag">Why Auto wins</span>
+      <p>Error is measured as <code>|chosen index − ideal index|</code>. With 5× more candidates, the nearest free date is on average 5× closer to the ideal. Fixed exams can only slide whole weeks; Auto exams can also slide <em>within</em> the week (Tue instead of Wed) to dodge a blocked week without losing evenness.</p>
+    </div>
+    <div class="callout sage">
+      <span class="tag">Example to try in the app</span>
+      <p>Set Math to <strong>✨ Auto ×4</strong> and English to <strong>split ×3 → Mon / Thu / Auto</strong>, then press Generate. Math will land within a day or two of its ideal positions, English 1 stays Monday, English 2 stays Thursday, English 3 (Auto) fills whichever weekday keeps the class clash-free.</p>
     </div>
   </section>
 
   <footer class="doc">
     <span><strong>SABLE</strong> — Schularbeit Balanced Layout Engine</span>
-    <span>Worked example verified against the app's default settings.</span>
+    <span>Worked example (fixed weekdays) verified against the app · flexible-days edition: Auto + per-exam wishes use the same engine with per-exam candidate lists.</span>
   </footer>
 
 </div>
