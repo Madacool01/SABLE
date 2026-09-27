@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SABLE — How the Algorithm Works (Worked Example)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cabinet+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0B10;
+    --paper:#F6F1E7;
+    --gold:#E8C15A;
+    --sage:#9DB89A;
+    --clay:#E07856;
+    --muted:rgba(11,11,16,.58);
+    --rule:rgba(11,11,16,.12);
+    --card:#FFFDF8;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Outfit',system-ui,sans-serif;font-weight:400;line-height:1.62;
+    font-size:16.5px;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:64px 28px 96px}
+
+  /* ---------- Header ---------- */
+  header.doc{border-bottom:2px solid var(--ink);padding-bottom:28px;margin-bottom:40px}
+  .kicker{
+    display:inline-flex;align-items:center;gap:.55rem;
+    font-size:.72rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink);background:var(--gold);border-radius:999px;padding:.4rem .85rem;margin-bottom:20px;
+  }
+  .kicker .dot{width:.5rem;height:.5rem;border-radius:999px;background:var(--ink)}
+  h1{
+    font-family:'Cabinet Grotesk',sans-serif;font-weight:900;
+    font-size:clamp(2.2rem,5.4vw,3.4rem);line-height:1.02;letter-spacing:-.02em;margin:0 0 .5rem;
+  }
+  .subtitle{font-size:1.12rem;color:var(--muted);max-width:60ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:22px;font-size:.82rem}
+  .meta div{display:flex;flex-direction:column}
+  .meta dt{letter-spacing:.14em;text-transform:uppercase;font-size:.64rem;font-weight:700;color:var(--muted)}
+  .meta dd{margin:2px 0 0;font-weight:600}
+
+  /* ---------- Sections ---------- */
+  section{margin:0 0 52px}
+  .step{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .step .num{
+    flex:none;width:2.35rem;height:2.35rem;border-radius:.85rem;
+    display:grid;place-items:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;
+    font-size:1.05rem;background:var(--ink);color:var(--paper);
+  }
+  .step .num.gold{background:var(--gold);color:var(--ink)}
+  h2{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.6rem;letter-spacing:-.01em;margin:0}
+  h2.plain{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.4rem;margin:0 0 16px}
+  h3{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1.02rem;letter-spacing:.02em;
+     text-transform:uppercase;color:var(--muted);margin:26px 0 10px}
+  p{margin:14px 0}
+  .lead{font-size:1.06rem}
+  strong{font-weight:700}
+  code{
+    font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:.86em;
+    background:rgba(11,11,16,.07);border-radius:.35rem;padding:.12em .4em;
+  }
+
+  /* ---------- Cards / callouts ---------- */
+  .card{
+    background:var(--card);border:1px solid var(--rule);border-radius:1.25rem;
+    padding:22px 24px;margin:20px 0;box-shadow:0 1px 0 rgba(11,11,16,.03);
+  }
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .stat{padding:4px 2px}
+  .stat .k{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+  .stat .v{font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:1.65rem;line-height:1.15;margin-top:2px}
+  .stat .n{font-size:.82rem;color:var(--muted)}
+
+  .callout{
+    border-left:4px solid var(--gold);background:rgba(232,193,90,.14);
+    border-radius:0 1rem 1rem 0;padding:16px 22px;margin:22px 0;
+  }
+  .callout.sage{border-color:var(--sage);background:rgba(157,184,154,.16)}
+  .callout.clay{border-color:var(--clay);background:rgba(224,120,86,.12)}
+  .callout p:first-child{margin-top:0}
+  .callout p:last-child{margin-bottom:0}
+  .callout .tag{
+    display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:4px;
+  }
+
+  /* ---------- Tables ---------- */
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.95rem}
+  caption{caption-side:top;text-align:left;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+          font-weight:700;color:var(--muted);padding-bottom:8px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--rule)}
+  thead th{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+           border-bottom:2px solid var(--ink);font-weight:700}
+  tbody tr:last-child td{border-bottom:1px solid var(--rule)}
+  td.num,th.num{font-variant-numeric:tabular-nums;font-family:'Cabinet Grotesk',sans-serif;font-weight:700}
+  tr.hi td{background:rgba(232,193,90,.18)}
+
+  /* ---------- Ordered walkthrough ---------- */
+  ol.walk{list-style:none;counter-reset:w;margin:18px 0;padding:0}
+  ol.walk li{
+    counter-increment:w;position:relative;padding:14px 0 14px 58px;border-bottom:1px solid var(--rule);
+  }
+  ol.walk li:last-child{border-bottom:0}
+  ol.walk li::before{
+    content:counter(w);position:absolute;left:0;top:12px;
+    width:34px;height:34px;border-radius:999px;background:var(--gold);color:var(--ink);
+    display:grid;place-items:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:.95rem;
+  }
+  ol.walk .who{font-weight:700}
+  ol.walk .where{font-family:'Cabinet Grotesk',sans-serif;font-weight:900}
+  ol.walk .note{display:block;font-size:.86rem;color:var(--muted)}
+
+  /* ---------- Result timeline ---------- */
+  .timeline{margin:22px 0;padding:8px 0}
+  .tl-row{display:grid;grid-template-columns:118px 26px 1fr;gap:14px;align-items:start}
+  .tl-date{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:.9rem;text-align:right;
+           padding-top:6px;font-variant-numeric:tabular-nums}
+  .tl-axis{position:relative;display:flex;justify-content:center;height:100%}
+  .tl-axis::before{content:"";width:2px;background:var(--rule);position:absolute;top:0;bottom:0}
+  .tl-row:first-child .tl-axis::before{top:14px}
+  .tl-row:last-child .tl-axis::before{bottom:calc(100% - 16px)}
+  .tl-node{position:relative;width:14px;height:14px;border-radius:999px;background:var(--gold);
+           border:3px solid var(--card);margin-top:9px;z-index:1;box-shadow:0 0 0 1.5px var(--ink)}
+  .tl-body{padding:2px 0 22px}
+  .tl-body .lbl{font-weight:700}
+  .tl-body .lbl .of{color:var(--muted);font-weight:400}
+  .badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.04em;
+         border-radius:999px;padding:.12rem .6rem;margin-left:8px;vertical-align:middle}
+  .badge.math{background:rgba(157,184,154,.3);color:#3c5240}
+  .badge.eng{background:rgba(224,120,86,.22);color:#8a3f24}
+
+  /* ---------- Plain-English quote ---------- */
+  .quote{
+    background:var(--ink);color:var(--paper);border-radius:1.5rem;padding:34px 34px 30px;margin:26px 0;
+  }
+  .quote p{font-size:1.12rem;line-height:1.6;margin:0}
+  .quote p::before{content:"“";color:var(--gold);font-family:'Cabinet Grotesk',sans-serif;
+                   font-size:2.4rem;line-height:0;position:relative;top:.28rem;margin-right:.1rem}
+  .quote p::after{content:"”";color:var(--gold);font-family:'Cabinet Grotesk',sans-serif;font-size:2.4rem;
+                  line-height:0;position:relative;top:.28rem;margin-left:.1rem}
+  .quote .attr{margin-top:16px;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,241,231,.55)}
+
+  /* ---------- Sequence strip ---------- */
+  .seq{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0}
+  .seq .chip{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:.82rem;
+             border-radius:999px;padding:.35rem .8rem;border:1px solid var(--rule);background:var(--card)}
+  .seq .chip.math{background:rgba(157,184,154,.35);border-color:rgba(157,184,154,.7)}
+  .seq .chip.eng{background:rgba(224,120,86,.2);border-color:rgba(224,120,86,.5)}
+  .seq .arrow{color:var(--muted);font-size:.9rem}
+
+  footer.doc{border-top:2px solid var(--ink);margin-top:56px;padding-top:20px;
+             font-size:.82rem;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  footer.doc strong{color:var(--ink)}
+
+  /* ---------- Print ---------- */
+  @media print{
+    @page{margin:18mm 16mm}
+    body{background:#fff;font-size:11.5pt}
+    .wrap{max-width:none;padding:0}
+    h1{font-size:26pt}
+    section{break-inside:avoid;page-break-inside:avoid;margin-bottom:26pt}
+    .card,.callout,.quote,.timeline,table{break-inside:avoid;page-break-inside:avoid}
+    .quote{background:#f2efe6;color:#0B0B10;border:1.5pt solid #0B0B10}
+    .quote p::before,.quote p::after{color:#8a6d1e}
+    .quote .attr{color:#555}
+    .kicker{background:#e9d9a5}
+    thead{display:table-header-group}
+    a{color:inherit;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HEADER ============ -->
+  <header class="doc">
+    <span class="kicker"><span class="dot"></span> SABLE · Algorithm Explained</span>
+    <h1>How SABLE spreads<br>exams across the year</h1>
+    <p class="subtitle">A worked example you can trace by hand: one class, two subjects, seven exams — and the exact week each one lands on.</p>
+    <dl class="meta">
+      <div><dt>Class</dt><dd>5M</dd></div>
+      <div><dt>Math</dt><dd>4 exams · Wednesdays</dd></div>
+      <div><dt>English</dt><dd>3 exams · Thursdays</dd></div>
+      <div><dt>School year</dt><dd>14 Sep 2025 – 8 Jul 2026</dd></div>
+      <div><dt>Rules</dt><dd>4 lead weeks · calm week · quiet 2 weeks</dd></div>
+    </dl>
+  </header>
+
+  <!-- ============ INTRO ============ -->
+  <section>
+    <p class="lead">SABLE has to answer one question: <strong>which allowed week should each exam get?</strong> It must spread exams evenly, stop two exams in the same class from ever landing in the same week, and keep every exam clear of holidays and deadline periods.</p>
+    <p>The example below uses the app's default settings. Because those defaults are <em>Math ×4 on Wednesday</em> and <em>English ×3 on Thursday</em> in class 5M, the worked trace and the running app agree exactly — every number here was produced by the real code.</p>
+  </section>
+
+  <!-- ============ STEP 1: CALM DATES ============ -->
+  <section>
+    <div class="step"><span class="num gold">1</span><h2>Find the “calm” dates</h2></div>
+    <p>The first job is to throw away every week an exam is not allowed to use. Only the subject's own lesson weekday counts — Math only ever uses Wednesdays, English only Thursdays.</p>
+
+    <div class="card">
+      <h3>What disqualifies a date</h3>
+      <div class="grid3">
+        <div class="stat"><div class="k">Too early</div><div class="v">4 weeks</div><div class="n">Teaching buffer before the first exam</div></div>
+        <div class="stat"><div class="k">Holidays</div><div class="v">Inside</div><div class="n">Never scheduled during a break</div></div>
+        <div class="stat"><div class="k">After a break</div><div class="v">9 days</div><div class="n">2 hard days, then the calm week</div></div>
+        <div class="stat"><div class="k">Deadlines</div><div class="v">2 weeks</div><div class="n">Quiet window before semester/summer</div></div>
+      </div>
+    </div>
+
+    <p>After filtering, the two subjects are left with nearly identical lists:</p>
+    <div class="grid3">
+      <div class="card stat"><div class="k">Math · Wednesdays</div><div class="v">26</div><div class="n">calm dates available</div></div>
+      <div class="card stat"><div class="k">English · Thursdays</div><div class="v">25</div><div class="n">calm dates available</div></div>
+    </div>
+
+    <div class="callout sage">
+      <span class="tag">Why this matters</span>
+      <p>The two lists line up almost index-for-index — position 2 is Wed 12 Nov for Math and Thu 13 Nov for English, the same week. That means a date's <strong>index</strong> (its position in the list) is a good stand-in for “how far through the year” it is.</p>
+    </div>
+  </section>
+
+  <!-- ============ STEP 2: TARGET POSITION ============ -->
+  <section>
+    <div class="step"><span class="num">2</span><h2>Give every exam a target position</h2></div>
+    <p>Each exam gets a <strong>target fraction</strong> between 0 (start of year) and 1 (end of year). With <code>n</code> exams the fractions are simply <code>0, 1/(n−1), 2/(n−1) … 1</code>. That fraction is then converted into an <strong>index</strong> into the subject's own list of calm dates.</p>
+
+    <table>
+      <caption>Math — 4 exams across 26 calm Wednesdays</caption>
+      <thead><tr><th>Exam = M / N</th><th class="num">Fraction = (M-1) / (N−1)</th><th class="num">Target index = fraction × 25</th></tr></thead>
+      <tbody>
+        <tr><td>1 / 4</td><td class="num">0.000</td><td class="num">0.00</td></tr>
+        <tr><td>2 / 4</td><td class="num">0.333</td><td class="num">8.33</td></tr>
+        <tr><td>3 / 4</td><td class="num">0.667</td><td class="num">16.67</td></tr>
+        <tr><td>4 / 4</td><td class="num">1.000</td><td class="num">25.00</td></tr>
+      </tbody>
+    </table>
+
+    <table>
+      <caption>English — 3 Zs across 25 calm Thursdays</caption>
+      <thead><tr><th>Exam = M / N</th><th class="num">Fraction = (M-1) / (N−1)</th><th class="num">Target index = fraction × 24</th></tr></thead>
+      <tbody>
+        <tr><td>1 / 3</td><td class="num">0.000</td><td class="num">0.00</td></tr>
+        <tr><td>2 / 3</td><td class="num">0.500</td><td class="num">12.00</td></tr>
+        <tr><td>3 / 3</td><td class="num">1.000</td><td class="num">24.00</td></tr>
+      </tbody>
+    </table>
+
+    <p>Math wants to land near index <strong>0, 8, 17, 25</strong>; English near <strong>0, 12, 24</strong>. Both subjects are aiming at roughly the same spread across the year — that is the whole point.</p>
+  </section>
+
+  <!-- ============ STEP 3: MERGE & SORT ============ -->
+  <section>
+    <div class="step"><span class="num">3</span><h2>Merge and sort into one queue</h2></div>
+    <p>All seven exams go into a single shared list, ordered by target fraction. If two exams tie on fraction, the sort breaks the tie by <code>of</code> — the number of exams that subject has — so the subject with <em>fewer</em> exams goes first.</p>
+
+    <table>
+      <caption>Placement order</caption>
+      <thead><tr><th>#</th><th>Exam</th><th class="num">Fraction</th><th class="num">Target index</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>English 1 / 3</td><td class="num">0.000</td><td class="num">0.00</td></tr>
+        <tr><td class="num">2</td><td>Math 1 / 4</td><td class="num">0.000</td><td class="num">0.00</td></tr>
+        <tr><td class="num">3</td><td>Math 2 / 4</td><td class="num">0.333</td><td class="num">8.33</td></tr>
+        <tr><td class="num">4</td><td>English 2 / 3</td><td class="num">0.500</td><td class="num">12.00</td></tr>
+        <tr><td class="num">5</td><td>Math 3 / 4</td><td class="num">0.667</td><td class="num">16.67</td></tr>
+        <tr><td class="num">6</td><td>English 3 / 3</td><td class="num">1.000</td><td class="num">24.00</td></tr>
+        <tr><td class="num">7</td><td>Math 4 / 4</td><td class="num">1.000</td><td class="num">25.00</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <span class="tag">The tie-break in action</span>
+      <p>English 1/3 comes <em>before</em> Math 1/4 even though both sit at fraction 0.000. The second sort key, <code>of</code>, sends the subject with fewer exams first. Without it, Math would always grab the very first week.</p>
+    </div>
+  </section>
+
+  <!-- ============ STEP 4: GREEDY PLACEMENT ============ -->
+  <section>
+    <div class="step"><span class="num gold">4</span><h2>Place each exam on its nearest free week</h2></div>
+    <p>Walk the queue top to bottom. For each exam, scan every still-free date, measure the distance <code>|index − target|</code>, and claim the smallest. A claimed week is removed from the pool for good — which is exactly what enforces “one exam per class per week”.</p>
+
+    <ol class="walk">
+      <li><span class="who">English 1/3</span> wants index 0.00 → claims <span class="where">index 0 · Thu 16 Oct</span><span class="note">Exact fit.</span></li>
+      <li><span class="who">Math 1/4</span> wants index 0.00, but that same week is taken → slides to <span class="where">index 1 · Wed 22 Oct</span><span class="note">Off target by 1.0 — the tie-break pushed it one week late.</span></li>
+      <li><span class="who">Math 2/4</span> wants index 8.33 → lands on <span class="where">index 8 · Wed 21 Jan 2026</span><span class="note">Off target by 0.33.</span></li>
+      <li><span class="who">English 2/3</span> wants index 12.00 → lands on <span class="where">index 12 · Thu 12 Mar 2026</span><span class="note">Exact fit.</span></li>
+      <li><span class="who">Math 3/4</span> wants index 16.67 → lands on <span class="where">index 17 · Wed 29 Apr 2026</span><span class="note">Off target by 0.33.</span></li>
+      <li><span class="who">English 3/3</span> wants index 24.00 → lands on <span class="where">index 24 · Thu 18 Jun 2026</span><span class="note">Exact fit.</span></li>
+      <li><span class="who">Math 4/4</span> wants index 25.00 → lands on <span class="where">index 25 · Wed 24 Jun 2026</span><span class="note">Exact fit.</span></li>
+    </ol>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section>
+    <div class="step"><span class="num">5</span><h2>The result</h2></div>
+    <p>Seven exams, spread from mid-October to late June, and no two in the same week.</p>
+
+    <div class="timeline">
+      <div class="tl-row"><div class="tl-date">Thu 16 Oct 2025</div><div class="tl-axis"><span class="tl-node"></span></div><div class="tl-body"><span class="lbl">English <span class="of">· exam 1/3</span></span><span class="badge eng">English</span></div></div>
+      <div class="tl-row"><div class="tl-date">Wed 22 Oct 2025</div><div class="tl-axis"><span class="tl-node"></span></div><div class="tl-body"><span class="lbl">Math <span class="of">· exam 1/4</span></span><span class="badge math">Math</span></div></div>
+      <div class="tl-row"><div class="tl-date">Wed 21 Jan 2026</div><div class="tl-axis"><span class="tl-node"></span></div><div class="tl-body"><span class="lbl">Math <span class="of">· exam 2/4</span></span><span class="badge math">Math</span></div></div>
+      <div class="tl-row"><div class="tl-date">Thu 12 Mar 2026</div><div class="tl-axis"><span class="tl-node"></span></div><div class="tl-body"><span class="lbl">English <span class="of">· exam 2/3</span></span><span class="badge eng">English</span></div></div>
+      <div class="tl-row"><div class="tl-date">Wed 29 Apr 2026</div><div class="tl-axis"><span class="tl-node"></span></div><div class="tl-body"><span class="lbl">Math <span class="of">· exam 3/4</span></span><span class="badge math">Math</span></div></div>
+      <div class="tl-row"><div class="tl-date">Thu 18 Jun 2026</div><div class="tl-axis"><span class="tl-node"></span></div><div class="tl-body"><span class="lbl">English <span class="of">· exam 3/3</span></span><span class="badge eng">English</span></div></div>
+      <div class="tl-row"><div class="tl-date">Wed 24 Jun 2026</div><div class="tl-axis"><span class="tl-node"></span></div><div class="tl-body"><span class="lbl">Math <span class="of">· exam 4/4</span></span><span class="badge math">Math</span></div></div>
+    </div>
+
+    <div class="callout sage">
+      <span class="tag">The interleaving is visible in the output</span>
+      <div class="seq">
+        <span class="chip eng">English</span><span class="arrow">→</span>
+        <span class="chip math">Math</span><span class="arrow">→</span>
+        <span class="chip math">Math</span><span class="arrow">→</span>
+        <span class="chip eng">English</span><span class="arrow">→</span>
+        <span class="chip math">Math</span><span class="arrow">→</span>
+        <span class="chip eng">English</span><span class="arrow">→</span>
+        <span class="chip math">Math</span>
+      </div>
+      <p>The two subjects alternate instead of Math finishing in October and English starting in June. No two exams ever share a week, because that week leaves the pool the moment it is claimed.</p>
+    </div>
+
+    <div class="callout clay">
+      <span class="tag">The one imperfection</span>
+      <p>Math 1/4 was pushed a full week late (index 1 instead of 0) because English took the first week on the <code>of</code> tie-break. Total error across all seven exams is only <strong>1.67 index steps out of 51</strong> — so the schedule is already very close to ideal.</p>
+    </div>
+  </section>
+
+  <!-- ============ PLAIN ENGLISH ============ -->
+  <section>
+    <h2 class="plain">How to explain this in one breath</h2>
+    <div class="quote">
+      <p>Each exam is assigned a target position between 0 and 1 across the school year, which is then converted into an index into that subject's list of allowed dates. All exams from all subjects in a class are sorted by that target position, so they get placed in chronological order and different subjects naturally interleave. Each one then claims the nearest free week, and since claimed weeks are removed from the pool, the one-exam-per-class-per-week rule is satisfied automatically.</p>
+      <div class="attr">SABLE — the placement rule in plain language</div>
+    </div>
+  </section>
+
+  <footer class="doc">
+    <span><strong>SABLE</strong> — Schularbeit Balanced Layout Engine</span>
+    <span>Worked example verified against the app's default settings.</span>
+  </footer>
+
+</div>
+</body>
+</html>
