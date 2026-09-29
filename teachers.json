@@ -1,752 +1,602 @@
 [
   {
     "code": "ADS",
-    "name": "Soma Adhikari",
-    "email": "ADS@europagym.at"
+    "name": "Soma Adhikari"
   },
   {
     "code": "ASC",
-    "name": "Samuel Aschauer",
-    "email": "ASC@europagym.at"
+    "name": "Samuel Aschauer"
   },
   {
     "code": "AT",
-    "name": "Kerstin Atzmüller-Rieser",
-    "email": "AT@europagym.at"
+    "name": "Kerstin Atzmüller-Rieser"
   },
   {
     "code": "AU",
-    "name": "Evelyn Aumair",
-    "email": "AU@europagym.at"
+    "name": "Evelyn Aumair"
   },
   {
     "code": "AUL",
-    "name": "Laura Auer",
-    "email": "AUL@europagym.at"
+    "name": "Laura Auer"
   },
   {
     "code": "BAL",
-    "name": "Sana Sadi Balour",
-    "email": "BAL@europagym.at"
+    "name": "Sana Sadi Balour"
   },
   {
     "code": "BED",
-    "name": "Dean Beissel",
-    "email": "BED@europagym.at"
+    "name": "Dean Beissel"
   },
   {
     "code": "BEL",
-    "name": "Melania Bellia",
-    "email": "BEL@europagym.at"
+    "name": "Melania Bellia"
   },
   {
     "code": "BEN",
-    "name": "Lisa Benedikt",
-    "email": "BEN@europagym.at"
+    "name": "Lisa Benedikt"
   },
   {
     "code": "BET",
-    "name": "Markus Bettinger",
-    "email": "BET@europagym.at"
+    "name": "Markus Bettinger"
   },
   {
     "code": "BG",
-    "name": "Katharina Bodingbauer-Gauch",
-    "email": "BG@europagym.at"
+    "name": "Katharina Bodingbauer-Gauch"
   },
   {
     "code": "BOL",
-    "name": "Lorenz Bogdanovics",
-    "email": "BOL@europagym.at"
+    "name": "Lorenz Bogdanovics"
   },
   {
     "code": "BR",
-    "name": "Ruth Browne",
-    "email": "BR@europagym.at"
+    "name": "Ruth Browne"
   },
   {
     "code": "BRU",
-    "name": "Stefan Brunnbauer",
-    "email": "BRU@europagym.at"
+    "name": "Stefan Brunnbauer"
   },
   {
     "code": "BS",
-    "name": "Silke Buchmayr",
-    "email": "BS@europagym.at"
+    "name": "Silke Buchmayr"
   },
   {
     "code": "BUJ",
-    "name": "Julia Burgholzer",
-    "email": "BUJ@europagym.at"
+    "name": "Julia Burgholzer"
   },
   {
     "code": "BY",
-    "name": "Sabine Bernsteiner",
-    "email": "BY@europagym.at"
+    "name": "Sabine Bernsteiner"
   },
   {
     "code": "CA",
-    "name": "Snjezana Calo",
-    "email": "CA@europagym.at"
+    "name": "Snjezana Calo"
   },
   {
     "code": "CL",
-    "name": "Jennifer Conry-Lindner",
-    "email": "CL@europagym.at"
+    "name": "Jennifer Conry-Lindner"
   },
   {
     "code": "DIJ",
-    "name": "Johannes Dirnberger",
-    "email": "DIJ@europagym.at"
+    "name": "Johannes Dirnberger"
   },
   {
     "code": "DL",
-    "name": "Martin Dlapka",
-    "email": "DL@europagym.at"
+    "name": "Martin Dlapka"
   },
   {
     "code": "EDL",
-    "name": "Sarah Edelsbacher",
-    "email": "EDL@europagym.at"
+    "name": "Sarah Edelsbacher"
   },
   {
     "code": "EG",
-    "name": "Johanna Egger",
-    "email": "EG@europagym.at"
+    "name": "Johanna Egger"
   },
   {
     "code": "EL",
-    "name": "Katharina Elias-Petermandl",
-    "email": "EL@europagym.at"
+    "name": "Katharina Elias-Petermandl"
   },
   {
     "code": "ERL",
-    "name": "Laura Antonia Ernst",
-    "email": "ERL@europagym.at"
+    "name": "Laura Antonia Ernst"
   },
   {
     "code": "FA",
-    "name": "Andrea Feichtinger",
-    "email": "FA@europagym.at"
+    "name": "Andrea Feichtinger"
   },
   {
     "code": "FI",
-    "name": "Doris Fischer",
-    "email": "FI@europagym.at"
+    "name": "Doris Fischer"
   },
   {
     "code": "FJ",
-    "name": "Craig Foulkes-Jones",
-    "email": "FJ@europagym.at"
+    "name": "Craig Foulkes-Jones"
   },
   {
     "code": "FN",
-    "name": "Christie Funk",
-    "email": "FN@europagym.at"
+    "name": "Christie Funk"
   },
   {
     "code": "FR",
-    "name": "Elisabeth Feichtinger",
-    "email": "FR@europagym.at"
+    "name": "Elisabeth Feichtinger"
   },
   {
     "code": "FU",
-    "name": "Andrew Funk",
-    "email": "FU@europagym.at"
+    "name": "Andrew Funk"
   },
   {
     "code": "FUE",
-    "name": "Hanna Füreder",
-    "email": "FUE@europagym.at"
+    "name": "Hanna Füreder"
   },
   {
     "code": "FUM",
-    "name": "Michael Fuchs",
-    "email": "FUM@europagym.at"
+    "name": "Michael Fuchs"
   },
   {
     "code": "FUR",
-    "name": "Katharina Fürlinger-Dunzinger",
-    "email": "FUR@europagym.at"
+    "name": "Katharina Fürlinger-Dunzinger"
   },
   {
     "code": "GIB",
-    "name": "Thomas Benjamin Gierlinger",
-    "email": "GIB@europagym.at"
+    "name": "Thomas Benjamin Gierlinger"
   },
   {
     "code": "GIE",
-    "name": "Raphael Gierlinger",
-    "email": "GIE@europagym.at"
+    "name": "Raphael Gierlinger"
   },
   {
     "code": "GIG",
-    "name": "Giorgia Giuliani",
-    "email": "GIG@europagym.at"
+    "name": "Giorgia Giuliani"
   },
   {
     "code": "GK",
-    "name": "Michaela Gornik",
-    "email": "GK@europagym.at"
+    "name": "Michaela Gornik"
   },
   {
     "code": "GL",
-    "name": "Selina Gut",
-    "email": "GL@europagym.at"
+    "name": "Selina Gut"
   },
   {
     "code": "GM",
-    "name": "Margit Gusenbauer",
-    "email": "GM@europagym.at"
+    "name": "Margit Gusenbauer"
   },
   {
     "code": "GOI",
-    "name": "Ioannis Gkolfis",
-    "email": "GOI@europagym.at"
+    "name": "Ioannis Gkolfis"
   },
   {
     "code": "GON",
-    "name": "Nikolaus Gössweiner-Mohr",
-    "email": "GON@europagym.at"
+    "name": "Nikolaus Gössweiner-Mohr"
   },
   {
     "code": "GR",
-    "name": "Stephan Greenway",
-    "email": "GR@europagym.at"
+    "name": "Stephan Greenway"
   },
   {
     "code": "GUF",
-    "name": "Florian Gut",
-    "email": "GUF@europagym.at"
+    "name": "Florian Gut"
   },
   {
     "code": "HA",
-    "name": "Bianca Hamberger",
-    "email": "HA@europagym.at"
+    "name": "Bianca Hamberger"
   },
   {
     "code": "HAG",
-    "name": "Alexander Hagmüller",
-    "email": "HAG@europagym.at"
+    "name": "Alexander Hagmüller"
   },
   {
     "code": "HB",
-    "name": "Ursula Huber",
-    "email": "HB@europagym.at"
+    "name": "Ursula Huber"
   },
   {
     "code": "HE",
-    "name": "Eva-Maria Hammerschmied",
-    "email": "HE@europagym.at"
+    "name": "Eva-Maria Hammerschmied"
   },
   {
     "code": "HEC",
-    "name": "Ruth Heckmann",
-    "email": "HEC@europagym.at"
+    "name": "Ruth Heckmann"
   },
   {
     "code": "HG",
-    "name": "Nicole Herzog",
-    "email": "HG@europagym.at"
+    "name": "Nicole Herzog"
   },
   {
     "code": "HL",
-    "name": "Manuela Haindl",
-    "email": "HL@europagym.at"
+    "name": "Manuela Haindl"
   },
   {
     "code": "HM",
-    "name": "Magdalena Himmelbauer",
-    "email": "HM@europagym.at"
+    "name": "Magdalena Himmelbauer"
   },
   {
     "code": "HOC",
-    "name": "Christina Hölzl",
-    "email": "HOC@europagym.at"
+    "name": "Christina Hölzl"
   },
   {
     "code": "HOF",
-    "name": "Wilhelm Hofmann",
-    "email": "HOF@europagym.at"
+    "name": "Wilhelm Hofmann"
   },
   {
     "code": "HOM",
-    "name": "Max Hofinger",
-    "email": "HOM@europagym.at"
+    "name": "Max Hofinger"
   },
   {
     "code": "HP",
-    "name": "Peter Hagmüller",
-    "email": "HP@europagym.at"
+    "name": "Peter Hagmüller"
   },
   {
     "code": "HR",
-    "name": "Susanne Hummer",
-    "email": "HR@europagym.at"
+    "name": "Susanne Hummer"
   },
   {
     "code": "HS",
-    "name": "Sabine Haslinger",
-    "email": "HS@europagym.at"
+    "name": "Sabine Haslinger"
   },
   {
     "code": "HUM",
-    "name": "Magdalena Humenberger",
-    "email": "HUM@europagym.at"
+    "name": "Magdalena Humenberger"
   },
   {
     "code": "HUN",
-    "name": "Nathalie Huber",
-    "email": "HUN@europagym.at"
+    "name": "Nathalie Huber"
   },
   {
     "code": "HX",
-    "name": "Alexander Hartl",
-    "email": "HX@europagym.at"
+    "name": "Alexander Hartl"
   },
   {
     "code": "JE",
-    "name": "Elisabeth Jenner-Braunschmied",
-    "email": "JE@europagym.at"
+    "name": "Elisabeth Jenner-Braunschmied"
   },
   {
     "code": "JEG",
-    "name": "Gregor Jelosics",
-    "email": "JEG@europagym.at"
+    "name": "Gregor Jelosics"
   },
   {
     "code": "JG",
-    "name": "Claudia  Jabornegg",
-    "email": "JG@europagym.at"
+    "name": "Claudia  Jabornegg"
   },
   {
     "code": "JL",
-    "name": "Andrea Jelinek",
-    "email": "JL@europagym.at"
+    "name": "Andrea Jelinek"
   },
   {
     "code": "JU",
-    "name": "Betina Jung",
-    "email": "JU@europagym.at"
+    "name": "Betina Jung"
   },
   {
     "code": "KAI",
-    "name": "Michael Kaindlbinder",
-    "email": "KAI@europagym.at"
+    "name": "Michael Kaindlbinder"
   },
   {
     "code": "KL",
-    "name": "Sandra Kienzl-Jungbauer",
-    "email": "KL@europagym.at"
+    "name": "Sandra Kienzl-Jungbauer"
   },
   {
     "code": "KM",
-    "name": "Marion Koppenberger",
-    "email": "KM@europagym.at"
+    "name": "Marion Koppenberger"
   },
   {
     "code": "KO",
-    "name": "Oliver Kim",
-    "email": "KO@europagym.at"
+    "name": "Oliver Kim"
   },
   {
     "code": "KOG",
-    "name": "Georg Koller",
-    "email": "KOG@europagym.at"
+    "name": "Georg Koller"
   },
   {
     "code": "KP",
-    "name": "Christoph Koppenberger",
-    "email": "KP@europagym.at"
+    "name": "Christoph Koppenberger"
   },
   {
     "code": "KRG",
-    "name": "Genevieve Kromm",
-    "email": "KRG@europagym.at"
+    "name": "Genevieve Kromm"
   },
   {
     "code": "KX",
-    "name": "Andrea Kraus",
-    "email": "KX@europagym.at"
+    "name": "Andrea Kraus"
   },
   {
     "code": "LA",
-    "name": "Doris Lachner",
-    "email": "LA@europagym.at"
+    "name": "Doris Lachner"
   },
   {
     "code": "LAI",
-    "name": "Isabella Sophie Lapuerta Guerra",
-    "email": "LAI@europagym.at"
+    "name": "Isabella Sophie Lapuerta Guerra"
   },
   {
     "code": "LEH",
-    "name": "Regina Lehenbauer",
-    "email": "LEH@europagym.at"
+    "name": "Regina Lehenbauer"
   },
   {
     "code": "LEN",
-    "name": "Brigitte Lenz",
-    "email": "LEN@europagym.at"
+    "name": "Brigitte Lenz"
   },
   {
     "code": "LEO",
-    "name": "Ingrid Leonhartsberger",
-    "email": "LEO@europagym.at"
+    "name": "Ingrid Leonhartsberger"
   },
   {
     "code": "LH",
-    "name": "Hermine Luger",
-    "email": "LH@europagym.at"
+    "name": "Hermine Luger"
   },
   {
     "code": "LIC",
-    "name": "Jessica Lichtenberger",
-    "email": "LIC@europagym.at"
+    "name": "Jessica Lichtenberger"
   },
   {
     "code": "LIT",
-    "name": "Tanja Lindorfer",
-    "email": "LIT@europagym.at"
+    "name": "Tanja Lindorfer"
   },
   {
     "code": "LN",
-    "name": "Angelika Linkesch",
-    "email": "LN@europagym.at"
+    "name": "Angelika Linkesch"
   },
   {
     "code": "LUN",
-    "name": "Stefan-Casian Lungeanu",
-    "email": "LUN@europagym.at"
+    "name": "Stefan-Casian Lungeanu"
   },
   {
     "code": "MA",
-    "name": "Christina Mathe",
-    "email": "MA@europagym.at"
+    "name": "Christina Mathe"
   },
   {
     "code": "MAK",
-    "name": "Anna-Luise Mayböck",
-    "email": "MAK@europagym.at"
+    "name": "Anna-Luise Mayböck"
   },
   {
     "code": "MAL",
-    "name": "Laura Maureder",
-    "email": "MAL@europagym.at"
+    "name": "Laura Maureder"
   },
   {
     "code": "MAR",
-    "name": "Raffael Lucas Maxian",
-    "email": "MAR@europagym.at"
+    "name": "Raffael Lucas Maxian"
   },
   {
     "code": "MAT",
-    "name": "Astrid Mathy",
-    "email": "MAT@europagym.at"
+    "name": "Astrid Mathy"
   },
   {
     "code": "MAY",
-    "name": "Julia Mayr",
-    "email": "MAY@europagym.at"
+    "name": "Julia Mayr"
   },
   {
     "code": "ME",
-    "name": "Astrid Melchart",
-    "email": "ME@europagym.at"
+    "name": "Astrid Melchart"
   },
   {
     "code": "MH",
-    "name": "Christa Mitter",
-    "email": "MH@europagym.at"
+    "name": "Christa Mitter"
   },
   {
     "code": "MK",
-    "name": "Karin Mödlhammer",
-    "email": "MK@europagym.at"
+    "name": "Karin Mödlhammer"
   },
   {
     "code": "MOL",
-    "name": "Julia Molnar",
-    "email": "MOL@europagym.at"
+    "name": "Julia Molnar"
   },
   {
     "code": "MRL",
-    "name": "Lina Mraz",
-    "email": "MRL@europagym.at"
+    "name": "Lina Mraz"
   },
   {
     "code": "MT",
-    "name": "Christina Milton",
-    "email": "MT@europagym.at"
+    "name": "Christina Milton"
   },
   {
     "code": "NEU",
-    "name": "Karin Neumüller-Layer",
-    "email": "NEU@europagym.at"
+    "name": "Karin Neumüller-Layer"
   },
   {
     "code": "NOM",
-    "name": "Martial Nourice",
-    "email": "NOM@europagym.at"
+    "name": "Martial Nourice"
   },
   {
     "code": "OBS",
-    "name": "Simon Obrovsky",
-    "email": "OBS@europagym.at"
+    "name": "Simon Obrovsky"
   },
   {
     "code": "OH",
-    "name": "Johanna Oberreiter",
-    "email": "OH@europagym.at"
+    "name": "Johanna Oberreiter"
   },
   {
     "code": "OM",
-    "name": "Andrea Obermayr-Rauter",
-    "email": "OM@europagym.at"
+    "name": "Andrea Obermayr-Rauter"
   },
   {
     "code": "PAM",
-    "name": "Melina Papadelis",
-    "email": "PAM@europagym.at"
+    "name": "Melina Papadelis"
   },
   {
     "code": "PEM",
-    "name": "Anna Pechmann",
-    "email": "PEM@europagym.at"
+    "name": "Anna Pechmann"
   },
   {
     "code": "PL",
-    "name": "Agnes Plöchl",
-    "email": "PL@europagym.at"
+    "name": "Agnes Plöchl"
   },
   {
     "code": "PO",
-    "name": "Astrid Plöchl-Baumberger",
-    "email": "PO@europagym.at"
+    "name": "Astrid Plöchl-Baumberger"
   },
   {
     "code": "PZ",
-    "name": "Peter Polz",
-    "email": "PZ@europagym.at"
+    "name": "Peter Polz"
   },
   {
     "code": "RA",
-    "name": "Alaine Rodin-Lo",
-    "email": "RA@europagym.at"
+    "name": "Alaine Rodin-Lo"
   },
   {
     "code": "RE",
-    "name": "Peter Reisinger",
-    "email": "RE@europagym.at"
+    "name": "Peter Reisinger"
   },
   {
     "code": "REA",
-    "name": "Anna Reichart",
-    "email": "REA@europagym.at"
+    "name": "Anna Reichart"
   },
   {
     "code": "REF",
-    "name": "Fabian Reiter",
-    "email": "REF@europagym.at"
+    "name": "Fabian Reiter"
   },
   {
     "code": "REI",
-    "name": "Maria Reisenauer",
-    "email": "REI@europagym.at"
+    "name": "Maria Reisenauer"
   },
   {
     "code": "RF",
-    "name": "Kerstin Reif-Zöhrer",
-    "email": "RF@europagym.at"
+    "name": "Kerstin Reif-Zöhrer"
   },
   {
     "code": "RI",
-    "name": "Julia Riegler",
-    "email": "RI@europagym.at"
+    "name": "Julia Riegler"
   },
   {
     "code": "RIR",
-    "name": "Raphael Ritt",
-    "email": "RIR@europagym.at"
+    "name": "Raphael Ritt"
   },
   {
     "code": "RIT",
-    "name": "Katharina Rittenschober",
-    "email": "RIT@europagym.at"
+    "name": "Katharina Rittenschober"
   },
   {
     "code": "RO",
-    "name": "Bettina Röthlin",
-    "email": "RO@europagym.at"
+    "name": "Bettina Röthlin"
   },
   {
     "code": "RT",
-    "name": "Andreas Roth",
-    "email": "RT@europagym.at"
+    "name": "Andreas Roth"
   },
   {
     "code": "RUM",
-    "name": "Martha Ruhsam",
-    "email": "RUM@europagym.at"
+    "name": "Martha Ruhsam"
   },
   {
     "code": "SAF",
-    "name": "Solange Safra Montoya",
-    "email": "SAF@europagym.at"
+    "name": "Solange Safra Montoya"
   },
   {
     "code": "SCG",
-    "name": "Günther Schürhuber",
-    "email": "SCG@europagym.at"
+    "name": "Günther Schürhuber"
   },
   {
     "code": "SCL",
-    "name": "Lydia Schmidsberger",
-    "email": "SCL@europagym.at"
+    "name": "Lydia Schmidsberger"
   },
   {
     "code": "SCM",
-    "name": "Maria Schmid",
-    "email": "SCM@europagym.at"
+    "name": "Maria Schmid"
   },
   {
     "code": "SG",
-    "name": "Benedicte Saling",
-    "email": "SG@europagym.at"
+    "name": "Benedicte Saling"
   },
   {
     "code": "SI",
-    "name": "Mary Katherine Stickel",
-    "email": "SI@europagym.at"
+    "name": "Mary Katherine Stickel"
   },
   {
     "code": "SIS",
-    "name": "Sigrid Sigl",
-    "email": "SIS@europagym.at"
+    "name": "Sigrid Sigl"
   },
   {
     "code": "SN",
-    "name": "Catherine Spring",
-    "email": "SN@europagym.at"
+    "name": "Catherine Spring"
   },
   {
     "code": "SP",
-    "name": "Sophie Spieldiener",
-    "email": "SP@europagym.at"
+    "name": "Sophie Spieldiener"
   },
   {
     "code": "SR",
-    "name": "Maria Schreibelmayr",
-    "email": "SR@europagym.at"
+    "name": "Maria Schreibelmayr"
   },
   {
     "code": "STA",
-    "name": "Alexander Strecker",
-    "email": "STA@europagym.at"
+    "name": "Alexander Strecker"
   },
   {
     "code": "STD",
-    "name": "Dominic Stec",
-    "email": "STD@europagym.at"
+    "name": "Dominic Stec"
   },
   {
     "code": "STK",
-    "name": "Katharina Stangl",
-    "email": "STK@europagym.at"
+    "name": "Katharina Stangl"
   },
   {
     "code": "STL",
-    "name": "Lisa Marie Steinbrecher",
-    "email": "STL@europagym.at"
+    "name": "Lisa Marie Steinbrecher"
   },
   {
     "code": "STS",
-    "name": "Sigrid Stöckl",
-    "email": "STS@europagym.at"
+    "name": "Sigrid Stöckl"
   },
   {
     "code": "SU",
-    "name": "Bettina Steinhauser",
-    "email": "SU@europagym.at"
+    "name": "Bettina Steinhauser"
   },
   {
     "code": "SV",
-    "name": "Denys Savchenko",
-    "email": "SV@europagym.at"
+    "name": "Denys Savchenko"
   },
   {
     "code": "THV",
-    "name": "Valentin Thalguter",
-    "email": "THV@europagym.at"
+    "name": "Valentin Thalguter"
   },
   {
     "code": "TR",
-    "name": "Ursula Trenkwalder",
-    "email": "TR@europagym.at"
+    "name": "Ursula Trenkwalder"
   },
   {
     "code": "TRA",
-    "name": "Patrick Traxler",
-    "email": "TRA@europagym.at"
+    "name": "Patrick Traxler"
   },
   {
     "code": "UTC",
-    "name": "Christine Utz",
-    "email": "UTC@europagym.at"
+    "name": "Christine Utz"
   },
   {
     "code": "WA",
-    "name": "Ute Wagner",
-    "email": "WA@europagym.at"
+    "name": "Ute Wagner"
   },
   {
     "code": "WD",
-    "name": "Daniela Natalia Ward",
-    "email": "WD@europagym.at"
+    "name": "Daniela Natalia Ward"
   },
   {
     "code": "WE",
-    "name": "Marlies Walchshofer",
-    "email": "WE@europagym.at"
+    "name": "Marlies Walchshofer"
   },
   {
     "code": "WH",
-    "name": "Barbara Windhager",
-    "email": "WH@europagym.at"
+    "name": "Barbara Windhager"
   },
   {
     "code": "WIE",
-    "name": "Johannes Wiesmeyr",
-    "email": "WIE@europagym.at"
+    "name": "Johannes Wiesmeyr"
   },
   {
     "code": "WM",
-    "name": "Michaela Wurm",
-    "email": "WM@europagym.at"
+    "name": "Michaela Wurm"
   },
   {
     "code": "WOP",
-    "name": "Philip Wohlschlager",
-    "email": "WOP@europagym.at"
+    "name": "Philip Wohlschlager"
   },
   {
     "code": "WS",
-    "name": "Susanne Weiß",
-    "email": "WS@europagym.at"
+    "name": "Susanne Weiß"
   },
   {
     "code": "WW",
-    "name": "Edward Woolner",
-    "email": "WW@europagym.at"
+    "name": "Edward Woolner"
   },
   {
     "code": "ZED",
-    "name": "Daniel Zehetner",
-    "email": "ZED@europagym.at"
+    "name": "Daniel Zehetner"
   },
   {
     "code": "ZET",
-    "name": "Teresa Zehetner",
-    "email": "ZET@europagym.at"
+    "name": "Teresa Zehetner"
   }
 ]
