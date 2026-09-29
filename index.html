@@ -183,7 +183,7 @@ tailwind.config = {
             <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden table-scroll">
               <table class="plan !text-ink"><thead><tr><th data-i18n="thClass">Class</th><th data-i18n="thSubject">Subject</th><th data-i18n="thTeacher">Teacher</th><th data-i18n="thCount">Count</th><th data-i18n="thDay">Lesson day</th><th></th></tr></thead><tbody id="rowBody"></tbody></table>
             </div>
-            <p class="text-xs text-ink/50 mt-2" data-i18n="tripsHint">Type a teacher name, pick their code. Only listed teachers count, so trips and absence can block dates next.</p>
+            <p class="text-xs text-ink/50 mt-2" data-i18n="tripsHint">Teachers and classes are checked against the school calendar. Trip and absence days are skipped automatically.</p>
           </div>
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
             <button id="genBtn" class="btn-gold rounded-full px-8 py-4 flex-1 !bg-ink !text-paper hover:!bg-black" data-i18n="genBtn">Generate my dates</button>
@@ -382,8 +382,8 @@ function mondayOf(d){const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.
 // ---------- Languages (EN/DE) ----------
 let lang = "en";
 const I18N = {
-en:{navSub:"Schularbeit Balanced Layout Engine",schoolDates:"School dates",changeAnything:"Change anything. Everything recalculates.",firstDay:"First school day",lastDay:"Last school day",semEndLbl:"Semester ends",sumStartLbl:"Summer break starts",leadWeeksLbl:"Teaching weeks before first exam",w2:"2 weeks",w3:"3 weeks",w4:"4 weeks",w5:"5 weeks",w6:"6 weeks",calmWeek:"Calm week after holidays",quietDeadlines:"Quiet 2 weeks before deadlines",dayHint:"Exam day is flexible per row. Pick ✨ Auto for the most even spread, one fixed weekday, or a different day per exam (1st, 2nd, 3rd...).",holidays:"Holidays",tapCal:"(tap a date to open the calendar)",addHol:"+ Add holiday",addSingle:"+ Single day",thName:"Name",thType:"Type",holSingle:"1 day",holMulti:"Multi-day",newSingle:"Day off",thFrom:"From",thTo:"To",remove:"Remove",needExams:"What needs exams?",addRow:"+ Add row",resetEx:"Reset example",thClass:"Class",thSubject:"Subject",thTeacher:"Teacher",thCount:"Count",thDay:"Lesson day",autoDay:"✨ Auto · best spread",perExam:"split per exam",singleDay:"single day",examN:"Exam",tripsHint:"Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.",genBtn:"Generate my dates",csvBtn:"Download CSV",printBtn:"Print",sugDates:"Your suggested dates",sugSub:"The gold date is our suggestion. Click another week if you prefer it. One exam per class per week, no exceptions.",emptyRes:"Nothing here yet. Press Generate my dates.",footerLine:"SABLE · one exam per class per week, evenly spread, no post-holiday or deadline weeks.",newBreak:"New break",newSubject:"New subject",classWord:"Class",examWord:"exam",teacherOpen:"Teacher not set",readyIdle:"Ready when you are.",resetConfirm:"Reset all rows, holidays and dates to the example?",genFirst:"Generate dates first.",todayBtn:"Today",doneBtn:"Done",tapMonthHint:"Tap the month name to pick month and year",tapYearHint:"Tap the year to pick from a range",printTitle:"SABLE · Exam Schedule",schoolYearW:"School year",printedW:"Printed",thDate:"Date",thGap:"Gap",firstGap:"first",teacherPh:"Type name or code...",teacherInvalid:"Pick a teacher from the list.",noTeacherHit:"No match. Try another spelling.",fixTeachers:"Fix teacher names first: ",classPh:"Pick a class...",classInvalid:"Pick a class from the list.",fixClasses:"Fix class names first: "},
-de:{navSub:"Ausgewogene Schularbeits-Planung",schoolDates:"Schultermine",changeAnything:"Ändern Sie etwas, alles wird neu berechnet.",firstDay:"Erster Schultag",lastDay:"Letzter Schultag",semEndLbl:"Semesterende",sumStartLbl:"Sommerferienbeginn",leadWeeksLbl:"Unterrichtswochen vor der ersten Schularbeit",w2:"2 Wochen",w3:"3 Wochen",w4:"4 Wochen",w5:"5 Wochen",w6:"6 Wochen",calmWeek:"Ruhige Woche nach den Ferien",quietDeadlines:"Ruhephase 2 Wochen vor Notenschluss",dayHint:"Der Tag ist flexibel pro Zeile. ✨ Auto für die gleichmäßigste Verteilung, ein fixer Wochentag oder pro Schularbeit ein eigener Tag (1., 2., 3., ...).",holidays:"Ferien",tapCal:"(Datum antippen für Kalender)",addHol:"+ Ferien hinzufügen",addSingle:"+ Einzelner Tag",thName:"Name",thType:"Art",holSingle:"1 Tag",holMulti:"Mehrere Tage",newSingle:"Freier Tag",thFrom:"Von",thTo:"Bis",remove:"Entfernen",needExams:"Welche Schularbeiten stehen an?",addRow:"+ Zeile hinzufügen",resetEx:"Beispiel zurücksetzen",thClass:"Klasse",thSubject:"Fach",thTeacher:"Lehrkraft",thCount:"Anzahl",thDay:"Unterrichtstag",autoDay:"✨ Auto · beste Verteilung",perExam:"pro SA trennen",singleDay:"ein Tag",examN:"SA",tripsHint:"Klassenfahrten und Abwesenheiten kommen später dazu. Nur gelistete Lehrkrafte zahlen, damit Fahrten und Abwesenheiten als Nachstes blockieren konnen.",genBtn:"Termine erstellen",csvBtn:"CSV herunterladen",printBtn:"Drucken",sugDates:"Vorgeschlagene Termine",sugSub:"Gold ist unser Vorschlag. Klicken Sie auf eine andere Woche, wenn sie Ihnen lieber ist. Es bleibt bei einer Schularbeit pro Klasse und Woche.",emptyRes:"Noch keine Termine. Drücken Sie auf Termine erstellen.",footerLine:"SABLE · eine Schularbeit pro Klasse und Woche, gleichmäßig verteilt, keine Wochen nach Ferien oder vor Notenschluss.",newBreak:"Neue Ferien",newSubject:"Neues Fach",classWord:"Klasse",examWord:"Schularbeit",teacherOpen:"Lehrkraft offen",readyIdle:"Bereit, wenn Sie es sind.",resetConfirm:"Alle Zeilen, Ferien und Daten auf das Beispiel zurücksetzen?",genFirst:"Erstellen Sie zuerst die Termine.",todayBtn:"Heute",doneBtn:"Fertig",tapMonthHint:"Tippen Sie auf den Monat für Monats- und Jahrauswahl",tapYearHint:"Tippen Sie auf das Jahr für die Jahresauswahl",printTitle:"SABLE · Schularbeits-Plan",schoolYearW:"Schuljahr",printedW:"Gedruckt",thDate:"Datum",thGap:"Abstand",firstGap:"erste",teacherPh:"Name oder Code tippen...",teacherInvalid:"Lehrkraft aus der Liste wahlen.",noTeacherHit:"Kein Treffer. Anders schreiben.",fixTeachers:"Bitte Lehrkrafte korrigieren: ",classPh:"Klasse wahlen...",classInvalid:"Klasse aus der Liste wahlen.",fixClasses:"Bitte Klassen korrigieren: "}
+en:{navSub:"Schularbeit Balanced Layout Engine",schoolDates:"School dates",changeAnything:"Change anything. Everything recalculates.",firstDay:"First school day",lastDay:"Last school day",semEndLbl:"Semester ends",sumStartLbl:"Summer break starts",leadWeeksLbl:"Teaching weeks before first exam",w2:"2 weeks",w3:"3 weeks",w4:"4 weeks",w5:"5 weeks",w6:"6 weeks",calmWeek:"Calm week after holidays",quietDeadlines:"Quiet 2 weeks before deadlines",dayHint:"Exam day is flexible per row. Pick ✨ Auto for the most even spread, one fixed weekday, or a different day per exam (1st, 2nd, 3rd...).",holidays:"Holidays",tapCal:"(tap a date to open the calendar)",addHol:"+ Add holiday",addSingle:"+ Single day",thName:"Name",thType:"Type",holSingle:"1 day",holMulti:"Multi-day",newSingle:"Day off",thFrom:"From",thTo:"To",remove:"Remove",needExams:"What needs exams?",addRow:"+ Add row",resetEx:"Reset example",thClass:"Class",thSubject:"Subject",thTeacher:"Teacher",thCount:"Count",thDay:"Lesson day",autoDay:"✨ Auto · best spread",perExam:"split per exam",singleDay:"single day",examN:"Exam",tripsHint:"Teachers and classes are checked against the school calendar. Trip and absence days are skipped automatically.",genBtn:"Generate my dates",csvBtn:"Download CSV",printBtn:"Print",sugDates:"Your suggested dates",sugSub:"The gold date is our suggestion. Click another week if you prefer it. One exam per class per week, no exceptions.",emptyRes:"Nothing here yet. Press Generate my dates.",footerLine:"SABLE · one exam per class per week, evenly spread, no post-holiday or deadline weeks.",newBreak:"New break",newSubject:"New subject",classWord:"Class",examWord:"exam",teacherOpen:"Teacher not set",readyIdle:"Ready when you are.",resetConfirm:"Reset all rows, holidays and dates to the example?",genFirst:"Generate dates first.",todayBtn:"Today",doneBtn:"Done",tapMonthHint:"Tap the month name to pick month and year",tapYearHint:"Tap the year to pick from a range",printTitle:"SABLE · Exam Schedule",schoolYearW:"School year",printedW:"Printed",thDate:"Date",thGap:"Gap",firstGap:"first",teacherPh:"Type name or code...",teacherInvalid:"Pick a teacher from the list.",noTeacherHit:"No match. Try another spelling.",fixTeachers:"Fix teacher names first: ",classPh:"Pick a class...",classInvalid:"Pick a class from the list.",fixClasses:"Fix class names first: "},
+de:{navSub:"Ausgewogene Schularbeits-Planung",schoolDates:"Schultermine",changeAnything:"Ändern Sie etwas, alles wird neu berechnet.",firstDay:"Erster Schultag",lastDay:"Letzter Schultag",semEndLbl:"Semesterende",sumStartLbl:"Sommerferienbeginn",leadWeeksLbl:"Unterrichtswochen vor der ersten Schularbeit",w2:"2 Wochen",w3:"3 Wochen",w4:"4 Wochen",w5:"5 Wochen",w6:"6 Wochen",calmWeek:"Ruhige Woche nach den Ferien",quietDeadlines:"Ruhephase 2 Wochen vor Notenschluss",dayHint:"Der Tag ist flexibel pro Zeile. ✨ Auto für die gleichmäßigste Verteilung, ein fixer Wochentag oder pro Schularbeit ein eigener Tag (1., 2., 3., ...).",holidays:"Ferien",tapCal:"(Datum antippen für Kalender)",addHol:"+ Ferien hinzufügen",addSingle:"+ Einzelner Tag",thName:"Name",thType:"Art",holSingle:"1 Tag",holMulti:"Mehrere Tage",newSingle:"Freier Tag",thFrom:"Von",thTo:"Bis",remove:"Entfernen",needExams:"Welche Schularbeiten stehen an?",addRow:"+ Zeile hinzufügen",resetEx:"Beispiel zurücksetzen",thClass:"Klasse",thSubject:"Fach",thTeacher:"Lehrkraft",thCount:"Anzahl",thDay:"Unterrichtstag",autoDay:"✨ Auto · beste Verteilung",perExam:"pro SA trennen",singleDay:"ein Tag",examN:"SA",tripsHint:"Lehrkrafte und Klassen werden mit dem Schulkalender abgeglichen. Ausfluge und Abwesenheiten werden automatisch ausgelassen.",genBtn:"Termine erstellen",csvBtn:"CSV herunterladen",printBtn:"Drucken",sugDates:"Vorgeschlagene Termine",sugSub:"Gold ist unser Vorschlag. Klicken Sie auf eine andere Woche, wenn sie Ihnen lieber ist. Es bleibt bei einer Schularbeit pro Klasse und Woche.",emptyRes:"Noch keine Termine. Drücken Sie auf Termine erstellen.",footerLine:"SABLE · eine Schularbeit pro Klasse und Woche, gleichmäßig verteilt, keine Wochen nach Ferien oder vor Notenschluss.",newBreak:"Neue Ferien",newSubject:"Neues Fach",classWord:"Klasse",examWord:"Schularbeit",teacherOpen:"Lehrkraft offen",readyIdle:"Bereit, wenn Sie es sind.",resetConfirm:"Alle Zeilen, Ferien und Daten auf das Beispiel zurücksetzen?",genFirst:"Erstellen Sie zuerst die Termine.",todayBtn:"Heute",doneBtn:"Fertig",tapMonthHint:"Tippen Sie auf den Monat für Monats- und Jahrauswahl",tapYearHint:"Tippen Sie auf das Jahr für die Jahresauswahl",printTitle:"SABLE · Schularbeits-Plan",schoolYearW:"Schuljahr",printedW:"Gedruckt",thDate:"Datum",thGap:"Abstand",firstGap:"erste",teacherPh:"Name oder Code tippen...",teacherInvalid:"Lehrkraft aus der Liste wahlen.",noTeacherHit:"Kein Treffer. Anders schreiben.",fixTeachers:"Bitte Lehrkrafte korrigieren: ",classPh:"Klasse wahlen...",classInvalid:"Klasse aus der Liste wahlen.",fixClasses:"Bitte Klassen korrigieren: "}
 };
 const MONTHS_L = {en:["January","February","March","April","May","June","July","August","September","October","November","December"],de:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]};
 const DOW_L = {en:["Mo","Tu","We","Th","Fr","Sa","Su"],de:["Mo","Di","Mi","Do","Fr","Sa","So"]};
@@ -567,6 +567,39 @@ document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5m",subjec
 
 function getHols(){return defaultHols.map(h=>({name:h.name,start:parseD(h.start),end:parseD(h.end)})).filter(h=>h.start&&h.end&&h.end>=h.start)}
 
+const ICS_ABS=[{"s": "2026-09-15", "e": "2026-09-15", "c": [], "t": ["HG"], "w": 0}, {"s": "2026-09-17", "e": "2026-09-17", "c": ["1."], "t": [], "w": 0}, {"s": "2026-09-17", "e": "2026-09-17", "c": ["1.", "2.", "3.", "4."], "t": [], "w": 0}, {"s": "2026-09-18", "e": "2026-09-18", "c": ["1.", "5."], "t": [], "w": 0}, {"s": "2026-09-18", "e": "2026-09-18", "c": ["8."], "t": [], "w": 0}, {"s": "2026-09-18", "e": "2026-09-18", "c": ["5.", "6.", "7.", "8."], "t": [], "w": 0}, {"s": "2026-09-23", "e": "2026-09-23", "c": ["8.", "8a", "8b", "8c", "8f", "8l", "8l-ec", "8l-lan", "8m"], "t": ["AU", "HL"], "w": 0}, {"s": "2026-09-28", "e": "2026-09-30", "c": ["1c", "1f"], "t": ["GIE", "GOI", "HA", "PEM"], "w": 0}, {"s": "2026-09-28", "e": "2026-09-30", "c": ["1d", "1e"], "t": ["LIT", "UTC"], "w": 0}, {"s": "2026-09-28", "e": "2026-10-03", "c": ["4b", "4c"], "t": ["GUF", "HOM", "WD"], "w": 0}, {"s": "2026-09-30", "e": "2026-10-02", "c": ["1a", "1b"], "t": ["BG", "SR"], "w": 0}, {"s": "2026-09-30", "e": "2026-10-02", "c": ["1l", "1m"], "t": ["FJ", "LIC"], "w": 0}, {"s": "2026-10-01", "e": "2026-10-01", "c": ["5."], "t": ["JG"], "w": 0}, {"s": "2026-10-04", "e": "2026-10-09", "c": ["4f", "4g"], "t": [], "w": 0}, {"s": "2026-10-05", "e": "2026-10-10", "c": ["4a", "4d"], "t": ["GM", "HL", "HOC", "PZ"], "w": 0}, {"s": "2026-10-08", "e": "2026-10-13", "c": ["5."], "t": ["MK"], "w": 0}, {"s": "2026-10-08", "e": "2026-10-08", "c": ["1.", "2."], "t": [], "w": 0}, {"s": "2026-10-09", "e": "2026-10-09", "c": [], "t": ["HG"], "w": 0}, {"s": "2026-10-15", "e": "2026-10-15", "c": [], "t": ["JG", "JU"], "w": 0}, {"s": "2026-10-15", "e": "2026-10-15", "c": ["7l", "7m"], "t": ["HG"], "w": 0}, {"s": "2026-10-19", "e": "2026-10-23", "c": ["5."], "t": [], "w": 0}, {"s": "2026-10-19", "e": "2026-10-21", "c": ["5a", "5b", "5f"], "t": [], "w": 0}, {"s": "2026-10-20", "e": "2026-10-20", "c": ["4."], "t": ["OM"], "w": 0}, {"s": "2026-10-21", "e": "2026-10-23", "c": ["5l", "5m"], "t": [], "w": 0}, {"s": "2026-10-26", "e": "2026-10-30", "c": [], "t": [], "w": 1}, {"s": "2026-11-12", "e": "2026-11-17", "c": [], "t": ["HG"], "w": 0}, {"s": "2026-12-07", "e": "2026-12-07", "c": [], "t": [], "w": 1}, {"s": "2026-12-08", "e": "2026-12-08", "c": [], "t": [], "w": 1}, {"s": "2026-12-24", "e": "2027-01-06", "c": [], "t": [], "w": 1}, {"s": "2027-02-15", "e": "2027-02-19", "c": [], "t": [], "w": 1}, {"s": "2027-02-21", "e": "2027-03-04", "c": ["6l", "6m"], "t": ["SN"], "w": 0}, {"s": "2027-02-22", "e": "2027-02-26", "c": ["4l", "4m"], "t": ["RA", "SI"], "w": 0}, {"s": "2027-02-22", "e": "2027-03-02", "c": ["6l", "6m"], "t": ["MK"], "w": 0}, {"s": "2027-03-01", "e": "2027-03-01", "c": ["8c"], "t": ["RE"], "w": 0}, {"s": "2027-03-01", "e": "2027-03-06", "c": ["3."], "t": ["RT"], "w": 0}, {"s": "2027-03-03", "e": "2027-03-05", "c": [], "t": ["FI"], "w": 0}, {"s": "2027-03-07", "e": "2027-03-12", "c": ["3f", "3l", "3m", "3n"], "t": [], "w": 0}, {"s": "2027-03-15", "e": "2027-03-19", "c": ["6l", "6m"], "t": ["SI"], "w": 0}, {"s": "2027-03-17", "e": "2027-03-17", "c": ["4l", "4m"], "t": ["LIC"], "w": 0}, {"s": "2027-03-22", "e": "2027-03-29", "c": [], "t": [], "w": 1}, {"s": "2027-03-30", "e": "2027-04-05", "c": ["3f"], "t": ["FI"], "w": 0}, {"s": "2027-04-18", "e": "2027-04-24", "c": ["7f"], "t": [], "w": 0}, {"s": "2027-04-19", "e": "2027-04-23", "c": [], "t": ["RA", "SI"], "w": 0}, {"s": "2027-05-03", "e": "2027-05-03", "c": [], "t": [], "w": 1}, {"s": "2027-05-04", "e": "2027-05-04", "c": [], "t": [], "w": 1}, {"s": "2027-05-06", "e": "2027-05-06", "c": [], "t": [], "w": 1}, {"s": "2027-05-17", "e": "2027-05-17", "c": [], "t": [], "w": 1}, {"s": "2027-05-27", "e": "2027-05-27", "c": [], "t": [], "w": 1}, {"s": "2027-05-28", "e": "2027-05-28", "c": [], "t": [], "w": 1}, {"s": "2027-06-05", "e": "2027-06-12", "c": ["4l", "4m"], "t": [], "w": 0}, {"s": "2027-06-24", "e": "2027-06-24", "c": [], "t": ["GR", "LEN"], "w": 0}, {"s": "2027-06-27", "e": "2027-07-04", "c": ["6f"], "t": ["HL"], "w": 0}, {"s": "2027-06-28", "e": "2027-07-02", "c": ["6a", "6b", "6c"], "t": ["DL"], "w": 0}, {"s": "2027-07-10", "e": "2027-09-12", "c": [], "t": [], "w": 1}];
+const ABS_BY_DATE={};
+(function(){
+  const pd=s=>{const a=s.split("-");return new Date(+a[0],+a[1]-1,+a[2])};
+  ICS_ABS.forEach(r=>{
+    let d=pd(r.s);const e=pd(r.e);
+    while(d<=e){
+      const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+      (ABS_BY_DATE[k]=ABS_BY_DATE[k]||[]).push(r);
+      d.setDate(d.getDate()+1);
+    }
+  });
+})();
+let ABS_HITS=0;
+function absClassHit(keys,rowCls){
+  const r=String(rowCls||"").toLowerCase();
+  for(const k of keys){
+    const key=String(k).toLowerCase();
+    if(key.length===2&&key[1]==="."){if(r[0]===key[0])return true;continue}
+    if(key===r||key.startsWith(r)||r.startsWith(key))return true;
+  }
+  return false;
+}
+function isAbsent(iso,cls,tch){
+  const recs=ABS_BY_DATE[iso];if(!recs)return false;
+  const T=String(tch||"").toUpperCase();
+  for(const r of recs){
+    if(r.w)return true;
+    if(r.c.length&&absClassHit(r.c,cls))return true;
+    if(T&&r.t.indexOf(T)>=0)return true;
+  }
+  return false;
+}
 function buildMondays(s,e){
   const out=[];let m=mondayOf(s);
   while(m<=e){out.push(new Date(m));m.setDate(m.getDate()+7)}
@@ -574,7 +607,7 @@ function buildMondays(s,e){
 }
 // Calm candidate dates: wd 1-5 = that lesson weekday only, wd 0 = ✨ Auto (any Mon-Fri),
 // kept inside the school year and clear of teaching buffer, holidays and deadlines.
-function candidatesFor(wd,s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blockNoten){
+function candidatesFor(wd,s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blockNoten,cls,tch){
   wd=Math.max(0,Math.min(5,+wd||0));
   if(wd===0){
     const out=[];
@@ -583,6 +616,7 @@ function candidatesFor(wd,s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blo
         const exam=new Date(m);exam.setDate(m.getDate()+k);exam.setHours(0,0,0,0);
         if(exam<s||exam>e||exam<leadCutoff)continue;
         if(weekStatus(exam,hols,semEnd,sumStart,blockWeekAfter,blockNoten).blocked)continue;
+        if(isAbsent(dstr(exam),cls,tch)){ABS_HITS++;continue}
         out.push({monday:new Date(m),exam});
       }
     }
@@ -596,7 +630,9 @@ function candidatesFor(wd,s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blo
     const dow=w.exam.getDay();
     if(dow===0||dow===6)return false;
     if((w.exam.getDay()+6)%7!==wd-1)return false;
-    return !weekStatus(w.exam,hols,semEnd,sumStart,blockWeekAfter,blockNoten).blocked;
+    if(weekStatus(w.exam,hols,semEnd,sumStart,blockWeekAfter,blockNoten).blocked)return false;
+    if(isAbsent(dstr(w.exam),cls,tch)){ABS_HITS++;return false}
+    return true;
   });
 }
 function weekStatus(examDate,hols,semEnd,sumStart,blockWeekAfter,blockNoten){
@@ -624,7 +660,7 @@ function generate(){
   const leadCutoff=new Date(s);leadCutoff.setDate(leadCutoff.getDate()+leadWeeks*7);
   const byClass={};
   defaultRows.forEach((r,idx)=>{const c=(r.cls||"Class").trim()||"Class";(byClass[c]=byClass[c]||[]).push({...r,idx})});
-  lastPlan=[];const warns=[];
+  lastPlan=[];const warns=[];ABS_HITS=0;
   const badRows=[];
   defaultRows.forEach((r,idx)=>{if(!isValidTeacher(r.teacher))badRows.push((r.cls||"Class")+" / "+(r.subject||"")+" ("+(r.teacher||t("teacherOpen"))+")")});
   const badCls=[];
@@ -638,7 +674,7 @@ function generate(){
     // or a different weekday per exam (row.wds[examIndex]).
     const candsByExam=rows.map(row=>{
       const n=Math.max(1,+row.count||1);
-      return Array.from({length:n},(_,i)=>candidatesFor(wantDay(row,i),s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blockNoten));
+      return Array.from({length:n},(_,i)=>candidatesFor(wantDay(row,i),s,e,leadCutoff,hols,semEnd,sumStart,blockWeekAfter,blockNoten,row.cls,getTeacherCode(row.teacher)));
     });
     calmCount=Math.max(calmCount,...candsByExam.flat().map(c=>c.length));
     rows.forEach((row,ri)=>{
@@ -691,7 +727,7 @@ function generate(){
     });
   }
   if(warns.length){warnBox.classList.remove("hidden");warnBox.innerHTML=warns.join("<br>")}else{warnBox.classList.add("hidden");warnBox.innerHTML=""}
-  statLine.textContent = lang==="de"?`${calmCount} ruhige Unterrichtstermine · ${lastPlan.length} Schularbeiten platziert`:`${calmCount} calm lesson dates found · ${lastPlan.length} exams placed`;
+  statLine.textContent = lang==="de"?`${calmCount} ruhige Unterrichtstermine · ${lastPlan.length} Schularbeiten platziert · ${ABS_HITS} Kalendertage ausgelassen`:`${calmCount} calm lesson dates found · ${lastPlan.length} exams placed · ${ABS_HITS} calendar days skipped`;
   renderResults(); renderPrint();
 }
 function renderPrint(){
