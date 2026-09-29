@@ -101,6 +101,7 @@ tailwind.config = {
   .tch-item .tch-sub{display:block;font-size:.72rem;color:rgba(20,16,10,.55)}
   .tch-input.tch-invalid{border-color:#E07856!important;outline:2px solid rgba(224,120,86,.55)!important;background:#FFF1EA!important}
   .tch-hint{display:none;font-size:.72rem;color:#B64A2B;margin-top:.3rem;font-weight:600}
+  #tchPop{position:fixed;z-index:300;background:#fff;border:1px solid rgba(20,16,10,.14);border-radius:.9rem;box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden;max-height:240px;overflow-y:auto}
   .tch-hint.show{display:block}
   @media print{
     .no-print{display:none!important}
@@ -301,7 +302,7 @@ function teacherMatches(q){q=normT(q.trim());if(!q)return TEACHERS.slice(0,8);re
 function getTeacherCode(v){const m=String(v||"").match(/\(([A-Za-z]{2,4})\)\s*$/);if(m)return m[1].toUpperCase();const c=String(v||"").trim().toUpperCase();if(TEACHERS_BY_CODE[c])return c;return null}
 function teacherLabel(code){const x=TEACHERS_BY_CODE[String(code||"").toUpperCase()];return x?x.n+" ("+x.c+")":code}
 function isValidTeacher(v){const c=getTeacherCode(v);return !!(c&&TEACHERS_BY_CODE[c])}
-function closeTchLists(){document.querySelectorAll(".tch-list").forEach(el=>{el.hidden=true})}
+function closeTchLists(){const el=document.getElementById("tchPop");if(el)el.hidden=true;tchActive=null}
 
 
 let defaultHols = [
@@ -466,15 +467,17 @@ document.addEventListener("click",e=>{
     renderHols();saveSable();
   }
 });
-let tchSelIdx=-1;
+let tchSelIdx=-1;let tchActive=null;
+function tchPop(){let el=document.getElementById("tchPop");if(!el){el=document.createElement("div");el.id="tchPop";el.hidden=true;document.body.appendChild(el)}return el}
+function placeTchPop(input){const pop=tchPop();const r=input.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-280))+"px";pop.style.width=Math.max(r.width,240)+"px";const h=Math.min(240,pop.scrollHeight||240);let y=r.bottom+6;if(y+h>window.innerHeight-8)y=Math.max(8,r.top-h-6);pop.style.top=y+"px"}
 function paintTchList(input){
-  const wrap=input.closest(".tch-wrap");if(!wrap)return;const list=wrap.querySelector(".tch-list");
+  tchActive=input;const pop=tchPop();
   const hits=teacherMatches(input.value||"");
   tchSelIdx=-1;
-  if(!hits.length){list.innerHTML=`<div class="tch-item" style="cursor:default"><span>${t("noTeacherHit")}</span></div>`;list.hidden=false;return}
-  list.innerHTML=hits.map((x,k)=>`<button type="button" class="tch-item${k===0?" sel":""}" data-code="${x.c}" data-name="${esc(x.n)}"><span>${esc(x.n)}<span class="tch-sub">${t("thTeacher")}</span></span><span class="tch-code">${x.c}</span></button>`).join("");
-  list.hidden=false;
-  if(window.gsap)gsap.fromTo(list,{opacity:0,y:-6},{opacity:1,y:0,duration:.22,ease:"power2.out"});
+  if(!hits.length){pop.innerHTML=`<div class="tch-item" style="cursor:default"><span>${t("noTeacherHit")}</span></div>`}
+  else{pop.innerHTML=hits.map((x,k)=>`<button type="button" class="tch-item${k===0?" sel":""}" data-code="${x.c}" data-name="${esc(x.n)}"><span>${esc(x.n)}<span class="tch-sub">${t("thTeacher")}</span></span><span class="tch-code">${x.c}</span></button>`).join("")}
+  pop.hidden=false;placeTchPop(input);
+  if(window.gsap)gsap.fromTo(pop,{opacity:0,y:-6},{opacity:1,y:0,duration:.22,ease:"power2.out"});
 }
 document.addEventListener("focusin",e=>{
   if(e.target.classList&&e.target.classList.contains("tch-input"))paintTchList(e.target);
@@ -484,7 +487,7 @@ document.addEventListener("input",e=>{
 });
 document.addEventListener("keydown",e=>{
   if(!e.target.classList||!e.target.classList.contains("tch-input"))return;
-  const wrap=e.target.closest(".tch-wrap");const list=wrap?.querySelector(".tch-list");if(!list||list.hidden)return;
+  const list=document.getElementById("tchPop");if(!list||list.hidden)return;
   const items=[...list.querySelectorAll(".tch-item[data-code]")];if(!items.length)return;
   if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();tchSelIdx=e.key==="ArrowDown"?(tchSelIdx+1)%items.length:(tchSelIdx-1+items.length)%items.length;items.forEach((b,k)=>b.classList.toggle("sel",k===tchSelIdx))}
   else if(e.key==="Enter"&&tchSelIdx>=0&&items[tchSelIdx]){e.preventDefault();items[tchSelIdx].click()}
@@ -492,8 +495,8 @@ document.addEventListener("keydown",e=>{
 });
 document.addEventListener("click",e=>{
   const b=e.target.closest&&e.target.closest(".tch-item[data-code]");
-  if(b){const wrap=b.closest(".tch-wrap");const input=wrap?.querySelector(".tch-input");if(input){input.value=b.dataset.name+" ("+b.dataset.code+")";syncRowField(input);saveSable();closeTchLists();input.focus();if(window.gsap)gsap.fromTo(input,{scale:.97},{scale:1,duration:.25,ease:"back.out(2)"})}return}
-  if(!(e.target.closest&&e.target.closest(".tch-wrap")))closeTchLists();
+  if(b){const input=tchActive||document.querySelector(".tch-input:focus");if(input){input.value=b.dataset.name+" ("+b.dataset.code+")";syncRowField(input);saveSable();closeTchLists();input.focus();if(window.gsap)gsap.fromTo(input,{scale:.97},{scale:1,duration:.25,ease:"back.out(2)"})}return}
+  if(!(e.target.closest&&(e.target.closest(".tch-wrap")||e.target.closest("#tchPop"))))closeTchLists();
 });
 document.addEventListener("focusout",e=>{
   if(e.target.classList&&e.target.classList.contains("tch-input")){
@@ -504,6 +507,8 @@ document.addEventListener("focusout",e=>{
     if(!ok&&window.gsap)gsap.fromTo(e.target,{x:-4},{x:0,duration:.3,ease:"elastic.out(1,.4)"});
   }
 });
+window.addEventListener("scroll",()=>{if(tchActive&&document.getElementById("tchPop")&&!document.getElementById("tchPop").hidden)placeTchPop(tchActive)},true);
+window.addEventListener("resize",()=>closeTchLists());
 document.getElementById("addHol").onclick=()=>{defaultHols.push({name:t("newBreak"),start:"2026-01-01",end:"2026-01-03"});renderHols();saveSable()};
 document.getElementById("addSingle").onclick=()=>{defaultHols.push({name:t("newSingle"),start:"2026-01-01",end:"2026-01-01"});renderHols();saveSable()};
 document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5M",subject:t("newSubject"),teacher:"",count:2,wd:0,wds:null});renderRows();saveSable()};
