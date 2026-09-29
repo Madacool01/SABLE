@@ -93,6 +93,15 @@ tailwind.config = {
   .lang-btn:hover{border-color:#E8C15A}
   .lang-btn.active{background:#E8C15A;color:#14100A;border-color:#E8C15A}
   .lang-btn svg{width:1.4rem;height:1.4rem;border-radius:999px;display:block}
+  .tch-wrap{position:relative}
+  .tch-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;background:#fff;border:1px solid rgba(20,16,10,.14);border-radius:.9rem;box-shadow:0 24px 60px rgba(0,0,0,.25);overflow:hidden;max-height:240px;overflow-y:auto}
+  .tch-item{display:flex;align-items:center;justify-content:space-between;gap:.6rem;width:100%;text-align:left;padding:.55rem .8rem;font-size:.85rem;color:#14100A;cursor:pointer;border:0;background:#fff}
+  .tch-item:hover,.tch-item.sel{background:#FFF3D1}
+  .tch-item .tch-code{flex:none;font-size:.7rem;font-weight:800;background:#0B0B10;color:#F6F1E7;border-radius:999px;padding:.15rem .55rem;letter-spacing:.06em}
+  .tch-item .tch-sub{display:block;font-size:.72rem;color:rgba(20,16,10,.55)}
+  .tch-input.tch-invalid{border-color:#E07856!important;outline:2px solid rgba(224,120,86,.55)!important;background:#FFF1EA!important}
+  .tch-hint{display:none;font-size:.72rem;color:#B64A2B;margin-top:.3rem;font-weight:600}
+  .tch-hint.show{display:block}
   @media print{
     .no-print{display:none!important}
     body{background:#fff!important;color:#111!important}
@@ -166,7 +175,7 @@ tailwind.config = {
             <div class="mt-3 rounded-2xl border border-ink/10 overflow-hidden table-scroll">
               <table class="plan !text-ink"><thead><tr><th data-i18n="thClass">Class</th><th data-i18n="thSubject">Subject</th><th data-i18n="thTeacher">Teacher</th><th data-i18n="thCount">Count</th><th data-i18n="thDay">Lesson day</th><th></th></tr></thead><tbody id="rowBody"></tbody></table>
             </div>
-            <p class="text-xs text-ink/50 mt-2" data-i18n="tripsHint">Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.</p>
+            <p class="text-xs text-ink/50 mt-2" data-i18n="tripsHint">Type a teacher name, pick their code. Only listed teachers count, so trips and absence can block dates next.</p>
           </div>
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
             <button id="genBtn" class="btn-gold rounded-full px-8 py-4 flex-1 !bg-ink !text-paper hover:!bg-black" data-i18n="genBtn">Generate my dates</button>
@@ -285,6 +294,15 @@ const resultsEl = document.getElementById("results");
 const warnBox = document.getElementById("warnBox");
 const statLine = document.getElementById("statLine");
 let lastPlan = [];
+const TEACHERS=[{"c": "ADS", "n": "Soma Adhikari"}, {"c": "ASC", "n": "Samuel Aschauer"}, {"c": "AT", "n": "Kerstin Atzmüller-Rieser"}, {"c": "AU", "n": "Evelyn Aumair"}, {"c": "AUL", "n": "Laura Auer"}, {"c": "BAL", "n": "Sana Sadi Balour"}, {"c": "BED", "n": "Dean Beissel"}, {"c": "BEL", "n": "Melania Bellia"}, {"c": "BEN", "n": "Lisa Benedikt"}, {"c": "BET", "n": "Markus Bettinger"}, {"c": "BG", "n": "Katharina Bodingbauer-Gauch"}, {"c": "BOL", "n": "Lorenz Bogdanovics"}, {"c": "BR", "n": "Ruth Browne"}, {"c": "BRU", "n": "Stefan Brunnbauer"}, {"c": "BS", "n": "Silke Buchmayr"}, {"c": "BUJ", "n": "Julia Burgholzer"}, {"c": "BY", "n": "Sabine Bernsteiner"}, {"c": "CA", "n": "Snjezana Calo"}, {"c": "CL", "n": "Jennifer Conry-Lindner"}, {"c": "DIJ", "n": "Johannes Dirnberger"}, {"c": "DL", "n": "Martin Dlapka"}, {"c": "EDL", "n": "Sarah Edelsbacher"}, {"c": "EG", "n": "Johanna Egger"}, {"c": "EL", "n": "Katharina Elias-Petermandl"}, {"c": "ERL", "n": "Laura Antonia Ernst"}, {"c": "FA", "n": "Andrea Feichtinger"}, {"c": "FI", "n": "Doris Fischer"}, {"c": "FJ", "n": "Craig Foulkes-Jones"}, {"c": "FN", "n": "Christie Funk"}, {"c": "FR", "n": "Elisabeth Feichtinger"}, {"c": "FU", "n": "Andrew Funk"}, {"c": "FUE", "n": "Hanna Füreder"}, {"c": "FUM", "n": "Michael Fuchs"}, {"c": "FUR", "n": "Katharina Fürlinger-Dunzinger"}, {"c": "GIB", "n": "Thomas Benjamin Gierlinger"}, {"c": "GIE", "n": "Raphael Gierlinger"}, {"c": "GIG", "n": "Giorgia Giuliani"}, {"c": "GK", "n": "Michaela Gornik"}, {"c": "GL", "n": "Selina Gut"}, {"c": "GM", "n": "Margit Gusenbauer"}, {"c": "GOI", "n": "Ioannis Gkolfis"}, {"c": "GON", "n": "Nikolaus Gössweiner-Mohr"}, {"c": "GR", "n": "Stephan Greenway"}, {"c": "GUF", "n": "Florian Gut"}, {"c": "HA", "n": "Bianca Hamberger"}, {"c": "HAG", "n": "Alexander Hagmüller"}, {"c": "HB", "n": "Ursula Huber"}, {"c": "HE", "n": "Eva-Maria Hammerschmied"}, {"c": "HEC", "n": "Ruth Heckmann"}, {"c": "HG", "n": "Nicole Herzog"}, {"c": "HL", "n": "Manuela Haindl"}, {"c": "HM", "n": "Magdalena Himmelbauer"}, {"c": "HOC", "n": "Christina Hölzl"}, {"c": "HOF", "n": "Wilhelm Hofmann"}, {"c": "HOM", "n": "Max Hofinger"}, {"c": "HP", "n": "Peter Hagmüller"}, {"c": "HR", "n": "Susanne Hummer"}, {"c": "HS", "n": "Sabine Haslinger"}, {"c": "HUM", "n": "Magdalena Humenberger"}, {"c": "HUN", "n": "Nathalie Huber"}, {"c": "HX", "n": "Alexander Hartl"}, {"c": "JE", "n": "Elisabeth Jenner-Braunschmied"}, {"c": "JEG", "n": "Gregor Jelosics"}, {"c": "JG", "n": "Claudia  Jabornegg"}, {"c": "JL", "n": "Andrea Jelinek"}, {"c": "JU", "n": "Betina Jung"}, {"c": "KAI", "n": "Michael Kaindlbinder"}, {"c": "KL", "n": "Sandra Kienzl-Jungbauer"}, {"c": "KM", "n": "Marion Koppenberger"}, {"c": "KO", "n": "Oliver Kim"}, {"c": "KOG", "n": "Georg Koller"}, {"c": "KP", "n": "Christoph Koppenberger"}, {"c": "KRG", "n": "Genevieve Kromm"}, {"c": "KX", "n": "Andrea Kraus"}, {"c": "LA", "n": "Doris Lachner"}, {"c": "LAI", "n": "Isabella Sophie Lapuerta Guerra"}, {"c": "LEH", "n": "Regina Lehenbauer"}, {"c": "LEN", "n": "Brigitte Lenz"}, {"c": "LEO", "n": "Ingrid Leonhartsberger"}, {"c": "LH", "n": "Hermine Luger"}, {"c": "LIC", "n": "Jessica Lichtenberger"}, {"c": "LIT", "n": "Tanja Lindorfer"}, {"c": "LN", "n": "Angelika Linkesch"}, {"c": "LUN", "n": "Stefan-Casian Lungeanu"}, {"c": "MA", "n": "Christina Mathe"}, {"c": "MAK", "n": "Anna-Luise Mayböck"}, {"c": "MAL", "n": "Laura Maureder"}, {"c": "MAR", "n": "Raffael Lucas Maxian"}, {"c": "MAT", "n": "Astrid Mathy"}, {"c": "MAY", "n": "Julia Mayr"}, {"c": "ME", "n": "Astrid Melchart"}, {"c": "MH", "n": "Christa Mitter"}, {"c": "MK", "n": "Karin Mödlhammer"}, {"c": "MOL", "n": "Julia Molnar"}, {"c": "MRL", "n": "Lina Mraz"}, {"c": "MT", "n": "Christina Milton"}, {"c": "NEU", "n": "Karin Neumüller-Layer"}, {"c": "NOM", "n": "Martial Nourice"}, {"c": "OBS", "n": "Simon Obrovsky"}, {"c": "OH", "n": "Johanna Oberreiter"}, {"c": "OM", "n": "Andrea Obermayr-Rauter"}, {"c": "PAM", "n": "Melina Papadelis"}, {"c": "PEM", "n": "Anna Pechmann"}, {"c": "PL", "n": "Agnes Plöchl"}, {"c": "PO", "n": "Astrid Plöchl-Baumberger"}, {"c": "PZ", "n": "Peter Polz"}, {"c": "RA", "n": "Alaine Rodin-Lo"}, {"c": "RE", "n": "Peter Reisinger"}, {"c": "REA", "n": "Anna Reichart"}, {"c": "REF", "n": "Fabian Reiter"}, {"c": "REI", "n": "Maria Reisenauer"}, {"c": "RF", "n": "Kerstin Reif-Zöhrer"}, {"c": "RI", "n": "Julia Riegler"}, {"c": "RIR", "n": "Raphael Ritt"}, {"c": "RIT", "n": "Katharina Rittenschober"}, {"c": "RO", "n": "Bettina Röthlin"}, {"c": "RT", "n": "Andreas Roth"}, {"c": "RUM", "n": "Martha Ruhsam"}, {"c": "SAF", "n": "Solange Safra Montoya"}, {"c": "SCG", "n": "Günther Schürhuber"}, {"c": "SCL", "n": "Lydia Schmidsberger"}, {"c": "SCM", "n": "Maria Schmid"}, {"c": "SG", "n": "Benedicte Saling"}, {"c": "SI", "n": "Mary Katherine Stickel"}, {"c": "SIS", "n": "Sigrid Sigl"}, {"c": "SN", "n": "Catherine Spring"}, {"c": "SP", "n": "Sophie Spieldiener"}, {"c": "SR", "n": "Maria Schreibelmayr"}, {"c": "STA", "n": "Alexander Strecker"}, {"c": "STD", "n": "Dominic Stec"}, {"c": "STK", "n": "Katharina Stangl"}, {"c": "STL", "n": "Lisa Marie Steinbrecher"}, {"c": "STS", "n": "Sigrid Stöckl"}, {"c": "SU", "n": "Bettina Steinhauser"}, {"c": "SV", "n": "Denys Savchenko"}, {"c": "THV", "n": "Valentin Thalguter"}, {"c": "TR", "n": "Ursula Trenkwalder"}, {"c": "TRA", "n": "Patrick Traxler"}, {"c": "UTC", "n": "Christine Utz"}, {"c": "WA", "n": "Ute Wagner"}, {"c": "WD", "n": "Daniela Natalia Ward"}, {"c": "WE", "n": "Marlies Walchshofer"}, {"c": "WH", "n": "Barbara Windhager"}, {"c": "WIE", "n": "Johannes Wiesmeyr"}, {"c": "WM", "n": "Michaela Wurm"}, {"c": "WOP", "n": "Philip Wohlschlager"}, {"c": "WS", "n": "Susanne Weiß"}, {"c": "WW", "n": "Edward Woolner"}, {"c": "ZED", "n": "Daniel Zehetner"}, {"c": "ZET", "n": "Teresa Zehetner"}];
+const TEACHERS_BY_CODE={};TEACHERS.forEach(x=>{TEACHERS_BY_CODE[x.c.toUpperCase()]=x});
+function normT(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function teacherMatches(q){q=normT(q.trim());if(!q)return TEACHERS.slice(0,8);return TEACHERS.filter(x=>normT(x.n).includes(q)||normT(x.c).includes(q)).slice(0,8)}
+function getTeacherCode(v){const m=String(v||"").match(/\(([A-Za-z]{2,4})\)\s*$/);if(m)return m[1].toUpperCase();const c=String(v||"").trim().toUpperCase();if(TEACHERS_BY_CODE[c])return c;return null}
+function teacherLabel(code){const x=TEACHERS_BY_CODE[String(code||"").toUpperCase()];return x?x.n+" ("+x.c+")":code}
+function isValidTeacher(v){const c=getTeacherCode(v);return !!(c&&TEACHERS_BY_CODE[c])}
+function closeTchLists(){document.querySelectorAll(".tch-list").forEach(el=>{el.hidden=true})}
+
 
 let defaultHols = [
   {name:"Autumn break", start:"2025-10-26", end:"2025-11-02"},
@@ -293,10 +311,10 @@ let defaultHols = [
   {name:"Easter break", start:"2026-03-22", end:"2026-03-29"}
 ];
 let defaultRows = [
-  {cls:"5M", subject:"Math", teacher:"Mr. Fox", count:4, wd:3},
-  {cls:"5M", subject:"English", teacher:"Ms. Hart", count:3, wd:4},
-  {cls:"6L", subject:"German", teacher:"Mr. Brand", count:3, wd:2},
-  {cls:"6L", subject:"Math", teacher:"Ms. Quinn", count:2, wd:5}
+  {cls:"5M", subject:"Math", teacher:"Manuela Haindl (HL)", count:4, wd:3},
+  {cls:"5M", subject:"English", teacher:"Evelyn Aumair (AU)", count:3, wd:4},
+  {cls:"6L", subject:"German", teacher:"Bianca Hamberger (HA)", count:3, wd:2},
+  {cls:"6L", subject:"Math", teacher:"Margit Gusenbauer (GM)", count:2, wd:5}
 ];
 const EXAMPLE_HOLS = JSON.parse(JSON.stringify(defaultHols));
 const EXAMPLE_ROWS = JSON.parse(JSON.stringify(defaultRows));
@@ -350,8 +368,8 @@ function mondayOf(d){const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.
 // ---------- Languages (EN/DE) ----------
 let lang = "en";
 const I18N = {
-en:{navSub:"Schularbeit Balanced Layout Engine",schoolDates:"School dates",changeAnything:"Change anything. Everything recalculates.",firstDay:"First school day",lastDay:"Last school day",semEndLbl:"Semester ends",sumStartLbl:"Summer break starts",leadWeeksLbl:"Teaching weeks before first exam",w2:"2 weeks",w3:"3 weeks",w4:"4 weeks",w5:"5 weeks",w6:"6 weeks",calmWeek:"Calm week after holidays",quietDeadlines:"Quiet 2 weeks before deadlines",dayHint:"Exam day is flexible per row. Pick ✨ Auto for the most even spread, one fixed weekday, or a different day per exam (1st, 2nd, 3rd...).",holidays:"Holidays",tapCal:"(tap a date to open the calendar)",addHol:"+ Add holiday",addSingle:"+ Single day",thName:"Name",thType:"Type",holSingle:"1 day",holMulti:"Multi-day",newSingle:"Day off",thFrom:"From",thTo:"To",remove:"Remove",needExams:"What needs exams?",addRow:"+ Add row",resetEx:"Reset example",thClass:"Class",thSubject:"Subject",thTeacher:"Teacher",thCount:"Count",thDay:"Lesson day",autoDay:"✨ Auto · best spread",perExam:"split per exam",singleDay:"single day",examN:"Exam",tripsHint:"Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.",genBtn:"Generate my dates",csvBtn:"Download CSV",printBtn:"Print",sugDates:"Your suggested dates",sugSub:"The gold date is our suggestion. Click another week if you prefer it. One exam per class per week, no exceptions.",emptyRes:"Nothing here yet. Press Generate my dates.",footerLine:"SABLE · one exam per class per week, evenly spread, no post-holiday or deadline weeks.",newBreak:"New break",newSubject:"New subject",classWord:"Class",examWord:"exam",teacherOpen:"Teacher not set",readyIdle:"Ready when you are.",resetConfirm:"Reset all rows, holidays and dates to the example?",genFirst:"Generate dates first.",todayBtn:"Today",doneBtn:"Done",tapMonthHint:"Tap the month name to pick month and year",tapYearHint:"Tap the year to pick from a range",printTitle:"SABLE · Exam Schedule",schoolYearW:"School year",printedW:"Printed",thDate:"Date",thGap:"Gap",firstGap:"first"},
-de:{navSub:"Ausgewogene Schularbeits-Planung",schoolDates:"Schultermine",changeAnything:"Ändern Sie etwas, alles wird neu berechnet.",firstDay:"Erster Schultag",lastDay:"Letzter Schultag",semEndLbl:"Semesterende",sumStartLbl:"Sommerferienbeginn",leadWeeksLbl:"Unterrichtswochen vor der ersten Schularbeit",w2:"2 Wochen",w3:"3 Wochen",w4:"4 Wochen",w5:"5 Wochen",w6:"6 Wochen",calmWeek:"Ruhige Woche nach den Ferien",quietDeadlines:"Ruhephase 2 Wochen vor Notenschluss",dayHint:"Der Tag ist flexibel pro Zeile. ✨ Auto für die gleichmäßigste Verteilung, ein fixer Wochentag oder pro Schularbeit ein eigener Tag (1., 2., 3., ...).",holidays:"Ferien",tapCal:"(Datum antippen für Kalender)",addHol:"+ Ferien hinzufügen",addSingle:"+ Einzelner Tag",thName:"Name",thType:"Art",holSingle:"1 Tag",holMulti:"Mehrere Tage",newSingle:"Freier Tag",thFrom:"Von",thTo:"Bis",remove:"Entfernen",needExams:"Welche Schularbeiten stehen an?",addRow:"+ Zeile hinzufügen",resetEx:"Beispiel zurücksetzen",thClass:"Klasse",thSubject:"Fach",thTeacher:"Lehrkraft",thCount:"Anzahl",thDay:"Unterrichtstag",autoDay:"✨ Auto · beste Verteilung",perExam:"pro SA trennen",singleDay:"ein Tag",examN:"SA",tripsHint:"Klassenfahrten und Abwesenheiten kommen später dazu. Vorerst blockieren nur Ferien und Notenschluss Termine.",genBtn:"Termine erstellen",csvBtn:"CSV herunterladen",printBtn:"Drucken",sugDates:"Vorgeschlagene Termine",sugSub:"Gold ist unser Vorschlag. Klicken Sie auf eine andere Woche, wenn sie Ihnen lieber ist. Es bleibt bei einer Schularbeit pro Klasse und Woche.",emptyRes:"Noch keine Termine. Drücken Sie auf Termine erstellen.",footerLine:"SABLE · eine Schularbeit pro Klasse und Woche, gleichmäßig verteilt, keine Wochen nach Ferien oder vor Notenschluss.",newBreak:"Neue Ferien",newSubject:"Neues Fach",classWord:"Klasse",examWord:"Schularbeit",teacherOpen:"Lehrkraft offen",readyIdle:"Bereit, wenn Sie es sind.",resetConfirm:"Alle Zeilen, Ferien und Daten auf das Beispiel zurücksetzen?",genFirst:"Erstellen Sie zuerst die Termine.",todayBtn:"Heute",doneBtn:"Fertig",tapMonthHint:"Tippen Sie auf den Monat für Monats- und Jahrauswahl",tapYearHint:"Tippen Sie auf das Jahr für die Jahresauswahl",printTitle:"SABLE · Schularbeits-Plan",schoolYearW:"Schuljahr",printedW:"Gedruckt",thDate:"Datum",thGap:"Abstand",firstGap:"erste"}
+en:{navSub:"Schularbeit Balanced Layout Engine",schoolDates:"School dates",changeAnything:"Change anything. Everything recalculates.",firstDay:"First school day",lastDay:"Last school day",semEndLbl:"Semester ends",sumStartLbl:"Summer break starts",leadWeeksLbl:"Teaching weeks before first exam",w2:"2 weeks",w3:"3 weeks",w4:"4 weeks",w5:"5 weeks",w6:"6 weeks",calmWeek:"Calm week after holidays",quietDeadlines:"Quiet 2 weeks before deadlines",dayHint:"Exam day is flexible per row. Pick ✨ Auto for the most even spread, one fixed weekday, or a different day per exam (1st, 2nd, 3rd...).",holidays:"Holidays",tapCal:"(tap a date to open the calendar)",addHol:"+ Add holiday",addSingle:"+ Single day",thName:"Name",thType:"Type",holSingle:"1 day",holMulti:"Multi-day",newSingle:"Day off",thFrom:"From",thTo:"To",remove:"Remove",needExams:"What needs exams?",addRow:"+ Add row",resetEx:"Reset example",thClass:"Class",thSubject:"Subject",thTeacher:"Teacher",thCount:"Count",thDay:"Lesson day",autoDay:"✨ Auto · best spread",perExam:"split per exam",singleDay:"single day",examN:"Exam",tripsHint:"Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.",genBtn:"Generate my dates",csvBtn:"Download CSV",printBtn:"Print",sugDates:"Your suggested dates",sugSub:"The gold date is our suggestion. Click another week if you prefer it. One exam per class per week, no exceptions.",emptyRes:"Nothing here yet. Press Generate my dates.",footerLine:"SABLE · one exam per class per week, evenly spread, no post-holiday or deadline weeks.",newBreak:"New break",newSubject:"New subject",classWord:"Class",examWord:"exam",teacherOpen:"Teacher not set",readyIdle:"Ready when you are.",resetConfirm:"Reset all rows, holidays and dates to the example?",genFirst:"Generate dates first.",todayBtn:"Today",doneBtn:"Done",tapMonthHint:"Tap the month name to pick month and year",tapYearHint:"Tap the year to pick from a range",printTitle:"SABLE · Exam Schedule",schoolYearW:"School year",printedW:"Printed",thDate:"Date",thGap:"Gap",firstGap:"first",teacherPh:"Type name or code...",teacherInvalid:"Pick a teacher from the list.",noTeacherHit:"No match. Try another spelling.",fixTeachers:"Fix teacher names first: "},
+de:{navSub:"Ausgewogene Schularbeits-Planung",schoolDates:"Schultermine",changeAnything:"Ändern Sie etwas, alles wird neu berechnet.",firstDay:"Erster Schultag",lastDay:"Letzter Schultag",semEndLbl:"Semesterende",sumStartLbl:"Sommerferienbeginn",leadWeeksLbl:"Unterrichtswochen vor der ersten Schularbeit",w2:"2 Wochen",w3:"3 Wochen",w4:"4 Wochen",w5:"5 Wochen",w6:"6 Wochen",calmWeek:"Ruhige Woche nach den Ferien",quietDeadlines:"Ruhephase 2 Wochen vor Notenschluss",dayHint:"Der Tag ist flexibel pro Zeile. ✨ Auto für die gleichmäßigste Verteilung, ein fixer Wochentag oder pro Schularbeit ein eigener Tag (1., 2., 3., ...).",holidays:"Ferien",tapCal:"(Datum antippen für Kalender)",addHol:"+ Ferien hinzufügen",addSingle:"+ Einzelner Tag",thName:"Name",thType:"Art",holSingle:"1 Tag",holMulti:"Mehrere Tage",newSingle:"Freier Tag",thFrom:"Von",thTo:"Bis",remove:"Entfernen",needExams:"Welche Schularbeiten stehen an?",addRow:"+ Zeile hinzufügen",resetEx:"Beispiel zurücksetzen",thClass:"Klasse",thSubject:"Fach",thTeacher:"Lehrkraft",thCount:"Anzahl",thDay:"Unterrichtstag",autoDay:"✨ Auto · beste Verteilung",perExam:"pro SA trennen",singleDay:"ein Tag",examN:"SA",tripsHint:"Klassenfahrten und Abwesenheiten kommen später dazu. Nur gelistete Lehrkrafte zahlen, damit Fahrten und Abwesenheiten als Nachstes blockieren konnen.",genBtn:"Termine erstellen",csvBtn:"CSV herunterladen",printBtn:"Drucken",sugDates:"Vorgeschlagene Termine",sugSub:"Gold ist unser Vorschlag. Klicken Sie auf eine andere Woche, wenn sie Ihnen lieber ist. Es bleibt bei einer Schularbeit pro Klasse und Woche.",emptyRes:"Noch keine Termine. Drücken Sie auf Termine erstellen.",footerLine:"SABLE · eine Schularbeit pro Klasse und Woche, gleichmäßig verteilt, keine Wochen nach Ferien oder vor Notenschluss.",newBreak:"Neue Ferien",newSubject:"Neues Fach",classWord:"Klasse",examWord:"Schularbeit",teacherOpen:"Lehrkraft offen",readyIdle:"Bereit, wenn Sie es sind.",resetConfirm:"Alle Zeilen, Ferien und Daten auf das Beispiel zurücksetzen?",genFirst:"Erstellen Sie zuerst die Termine.",todayBtn:"Heute",doneBtn:"Fertig",tapMonthHint:"Tippen Sie auf den Monat für Monats- und Jahrauswahl",tapYearHint:"Tippen Sie auf das Jahr für die Jahresauswahl",printTitle:"SABLE · Schularbeits-Plan",schoolYearW:"Schuljahr",printedW:"Gedruckt",thDate:"Datum",thGap:"Abstand",firstGap:"erste",teacherPh:"Name oder Code tippen...",teacherInvalid:"Lehrkraft aus der Liste wahlen.",noTeacherHit:"Kein Treffer. Anders schreiben.",fixTeachers:"Bitte Lehrkrafte korrigieren: "}
 };
 const MONTHS_L = {en:["January","February","March","April","May","June","July","August","September","October","November","December"],de:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]};
 const DOW_L = {en:["Mo","Tu","We","Th","Fr","Sa","Su"],de:["Mo","Di","Mi","Do","Fr","Sa","So"]};
@@ -407,7 +425,7 @@ function renderRows(){
   rowBody.innerHTML = defaultRows.map((r,i)=>`<tr>
     <td><input value="${esc(r.cls)}" data-r="${i}" data-k="cls" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
     <td><input value="${esc(r.subject)}" data-r="${i}" data-k="subject" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
-    <td><input value="${esc(r.teacher)}" data-r="${i}" data-k="teacher" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
+    <td><div class="tch-wrap"><input value="${esc(r.teacher)}" data-r="${i}" data-k="teacher" placeholder="${t("teacherPh")}" autocomplete="off" spellcheck="false" class="tch-input !bg-white !text-ink !border-ink/15 !py-1.5 ${isValidTeacher(r.teacher)?"":"tch-invalid"}"><div class="tch-list" hidden></div><div class="tch-hint ${isValidTeacher(r.teacher)?"":"show"}">${t("teacherInvalid")}</div></div></td>
     <td><input type="number" min="1" max="12" value="${r.count}" data-r="${i}" data-k="count" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
     <td>${dayCell(r,i)}</td>
     <td><button data-delrow="${i}" class="text-sm font-bold opacity-50 hover:opacity-100">${t("remove")}</button></td></tr>`).join("");
@@ -419,6 +437,7 @@ function syncRowField(el){
   if(rk==="count"){row.count=Math.max(1,Math.min(12,+el.value||1));if(Array.isArray(row.wds)){while(row.wds.length<row.count)row.wds.push(+(row.wd||0));row.wds.length=row.count;renderRows()}}
   else if(rk==="wd")row.wd=Math.max(0,Math.min(5,+el.value||0));
   else if(rk==="wds"){const e=+el.dataset.e||0;if(!Array.isArray(row.wds))row.wds=[];row.wds[e]=Math.max(0,Math.min(5,+el.value||0))}
+  else if(rk==="teacher"){row[rk]=el.value;el.classList.toggle("tch-invalid",!isValidTeacher(el.value));const h=el.closest(".tch-wrap")?.querySelector(".tch-hint");if(h)h.classList.toggle("show",!isValidTeacher(el.value))}
   else row[rk]=el.value;
 }
 document.addEventListener("input",e=>{
@@ -445,6 +464,44 @@ document.addEventListener("click",e=>{
     if(h.start===h.end){const d=parseD(h.start);d.setDate(d.getDate()+2);h.end=dstr(d)}
     else{h.end=h.start}
     renderHols();saveSable();
+  }
+});
+let tchSelIdx=-1;
+function paintTchList(input){
+  const wrap=input.closest(".tch-wrap");if(!wrap)return;const list=wrap.querySelector(".tch-list");
+  const hits=teacherMatches(input.value||"");
+  tchSelIdx=-1;
+  if(!hits.length){list.innerHTML=`<div class="tch-item" style="cursor:default"><span>${t("noTeacherHit")}</span></div>`;list.hidden=false;return}
+  list.innerHTML=hits.map((x,k)=>`<button type="button" class="tch-item${k===0?" sel":""}" data-code="${x.c}" data-name="${esc(x.n)}"><span>${esc(x.n)}<span class="tch-sub">${t("thTeacher")}</span></span><span class="tch-code">${x.c}</span></button>`).join("");
+  list.hidden=false;
+  if(window.gsap)gsap.fromTo(list,{opacity:0,y:-6},{opacity:1,y:0,duration:.22,ease:"power2.out"});
+}
+document.addEventListener("focusin",e=>{
+  if(e.target.classList&&e.target.classList.contains("tch-input"))paintTchList(e.target);
+});
+document.addEventListener("input",e=>{
+  if(e.target.classList&&e.target.classList.contains("tch-input"))paintTchList(e.target);
+});
+document.addEventListener("keydown",e=>{
+  if(!e.target.classList||!e.target.classList.contains("tch-input"))return;
+  const wrap=e.target.closest(".tch-wrap");const list=wrap?.querySelector(".tch-list");if(!list||list.hidden)return;
+  const items=[...list.querySelectorAll(".tch-item[data-code]")];if(!items.length)return;
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();tchSelIdx=e.key==="ArrowDown"?(tchSelIdx+1)%items.length:(tchSelIdx-1+items.length)%items.length;items.forEach((b,k)=>b.classList.toggle("sel",k===tchSelIdx))}
+  else if(e.key==="Enter"&&tchSelIdx>=0&&items[tchSelIdx]){e.preventDefault();items[tchSelIdx].click()}
+  else if(e.key==="Escape"){closeTchLists()}
+});
+document.addEventListener("click",e=>{
+  const b=e.target.closest&&e.target.closest(".tch-item[data-code]");
+  if(b){const wrap=b.closest(".tch-wrap");const input=wrap?.querySelector(".tch-input");if(input){input.value=b.dataset.name+" ("+b.dataset.code+")";syncRowField(input);saveSable();closeTchLists();input.focus();if(window.gsap)gsap.fromTo(input,{scale:.97},{scale:1,duration:.25,ease:"back.out(2)"})}return}
+  if(!(e.target.closest&&e.target.closest(".tch-wrap")))closeTchLists();
+});
+document.addEventListener("focusout",e=>{
+  if(e.target.classList&&e.target.classList.contains("tch-input")){
+    setTimeout(()=>closeTchLists(),140);
+    const ok=isValidTeacher(e.target.value);
+    e.target.classList.toggle("tch-invalid",!ok);
+    const h=e.target.closest(".tch-wrap")?.querySelector(".tch-hint");if(h)h.classList.toggle("show",!ok);
+    if(!ok&&window.gsap)gsap.fromTo(e.target,{x:-4},{x:0,duration:.3,ease:"elastic.out(1,.4)"});
   }
 });
 document.getElementById("addHol").onclick=()=>{defaultHols.push({name:t("newBreak"),start:"2026-01-01",end:"2026-01-03"});renderHols();saveSable()};
@@ -511,6 +568,10 @@ function generate(){
   const byClass={};
   defaultRows.forEach((r,idx)=>{const c=(r.cls||"Class").trim()||"Class";(byClass[c]=byClass[c]||[]).push({...r,idx})});
   lastPlan=[];const warns=[];
+  const badRows=[];
+  defaultRows.forEach((r,idx)=>{if(!isValidTeacher(r.teacher))badRows.push((r.cls||"Class")+" / "+(r.subject||"")+" ("+(r.teacher||t("teacherOpen"))+")")});
+  if(badRows.length){warnBox.classList.remove("hidden");warnBox.innerHTML=(lang==="de"?"Bitte Lehrkrafte korrigieren: ":"Fix teacher names first: ")+badRows.map(esc).join("<br>");statLine.textContent=t("readyIdle");renderResults();return}
+
   let calmCount=0;
   for(const [cls,rows] of Object.entries(byClass)){
     // Flexible calm dates: single weekday, ✨ Auto (any Mon-Fri),
