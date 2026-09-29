@@ -101,8 +101,15 @@ tailwind.config = {
   .tch-item .tch-sub{display:block;font-size:.72rem;color:rgba(20,16,10,.55)}
   .tch-input.tch-invalid{border-color:#E07856!important;outline:2px solid rgba(224,120,86,.55)!important;background:#FFF1EA!important}
   .tch-hint{display:none;font-size:.72rem;color:#B64A2B;margin-top:.3rem;font-weight:600}
+  #clsPop{position:fixed;z-index:300;background:#fff;border:1px solid rgba(20,16,10,.14);border-radius:.9rem;box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden;max-height:240px;overflow-y:auto}
+  .cls-wrap{position:relative}
+  .cls-input.cls-invalid{border-color:#E07856!important;outline:2px solid rgba(224,120,86,.55)!important;background:#FFF1EA!important}
+  .cls-hint{display:none;font-size:.72rem;color:#B64A2B;margin-top:.3rem;font-weight:600}
+  .cls-hint.show{display:block}
   #tchPop{position:fixed;z-index:300;background:#fff;border:1px solid rgba(20,16,10,.14);border-radius:.9rem;box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden;max-height:240px;overflow-y:auto}
   .tch-hint.show{display:block}
+  #clsPop .tch-item{display:flex;align-items:center;justify-content:space-between;gap:.6rem;width:100%;text-align:left;padding:.55rem .8rem;font-size:.85rem;color:#14100A;cursor:pointer;border:0;background:#fff}
+  #clsPop .tch-item:hover,#clsPop .tch-item.sel{background:#FFF3D1}
   @media print{
     .no-print{display:none!important}
     body{background:#fff!important;color:#111!important}
@@ -302,6 +309,12 @@ function teacherMatches(q){q=normT(q.trim());if(!q)return TEACHERS.slice(0,8);re
 function getTeacherCode(v){const m=String(v||"").match(/\(([A-Za-z]{2,4})\)\s*$/);if(m)return m[1].toUpperCase();const c=String(v||"").trim().toUpperCase();if(TEACHERS_BY_CODE[c])return c;return null}
 function teacherLabel(code){const x=TEACHERS_BY_CODE[String(code||"").toUpperCase()];return x?x.n+" ("+x.c+")":code}
 function isValidTeacher(v){const c=getTeacherCode(v);return !!(c&&TEACHERS_BY_CODE[c])}
+const CLASSES=["1.", "1c", "1f", "2.", "3.", "3f", "3l", "3m", "3n", "4.", "4B", "4C", "4L", "4M", "4a", "4d", "4f", "4g", "4l", "4m", "5.", "5a", "5b", "5f", "5l", "5m", "6.", "6L und 6M", "6a", "6b", "6c", "6f", "6l", "6m", "7.", "7L", "7M", "7f", "8.", "8A", "8B", "8C", "8F", "8L", "8M", "8a", "8b", "8c", "8f", "8l", "8l-ec", "8l-lan", "8m"];
+const CLASSES_SET=new Set(CLASSES);
+function classMatches(q){q=(q||"").trim().toLowerCase();if(!q)return CLASSES.slice(0,10);return CLASSES.filter(c=>c.toLowerCase().includes(q)).slice(0,10)}
+function getClassCanonical(v){v=String(v||"").trim();return CLASSES_SET.has(v)?v:null}
+function isValidClass(v){return !!getClassCanonical(v)}
+function closeClsLists(){const el=document.getElementById("clsPop");if(el)el.hidden=true;clsActive=null}
 function closeTchLists(){const el=document.getElementById("tchPop");if(el)el.hidden=true;tchActive=null}
 
 
@@ -312,10 +325,10 @@ let defaultHols = [
   {name:"Easter break", start:"2026-03-22", end:"2026-03-29"}
 ];
 let defaultRows = [
-  {cls:"5M", subject:"Math", teacher:"Manuela Haindl (HL)", count:4, wd:3},
-  {cls:"5M", subject:"English", teacher:"Evelyn Aumair (AU)", count:3, wd:4},
-  {cls:"6L", subject:"German", teacher:"Bianca Hamberger (HA)", count:3, wd:2},
-  {cls:"6L", subject:"Math", teacher:"Margit Gusenbauer (GM)", count:2, wd:5}
+  {cls:"5m", subject:"Math", teacher:"Manuela Haindl (HL)", count:4, wd:3},
+  {cls:"5m", subject:"English", teacher:"Evelyn Aumair (AU)", count:3, wd:4},
+  {cls:"6l", subject:"German", teacher:"Bianca Hamberger (HA)", count:3, wd:2},
+  {cls:"6l", subject:"Math", teacher:"Margit Gusenbauer (GM)", count:2, wd:5}
 ];
 const EXAMPLE_HOLS = JSON.parse(JSON.stringify(defaultHols));
 const EXAMPLE_ROWS = JSON.parse(JSON.stringify(defaultRows));
@@ -369,8 +382,8 @@ function mondayOf(d){const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.
 // ---------- Languages (EN/DE) ----------
 let lang = "en";
 const I18N = {
-en:{navSub:"Schularbeit Balanced Layout Engine",schoolDates:"School dates",changeAnything:"Change anything. Everything recalculates.",firstDay:"First school day",lastDay:"Last school day",semEndLbl:"Semester ends",sumStartLbl:"Summer break starts",leadWeeksLbl:"Teaching weeks before first exam",w2:"2 weeks",w3:"3 weeks",w4:"4 weeks",w5:"5 weeks",w6:"6 weeks",calmWeek:"Calm week after holidays",quietDeadlines:"Quiet 2 weeks before deadlines",dayHint:"Exam day is flexible per row. Pick ✨ Auto for the most even spread, one fixed weekday, or a different day per exam (1st, 2nd, 3rd...).",holidays:"Holidays",tapCal:"(tap a date to open the calendar)",addHol:"+ Add holiday",addSingle:"+ Single day",thName:"Name",thType:"Type",holSingle:"1 day",holMulti:"Multi-day",newSingle:"Day off",thFrom:"From",thTo:"To",remove:"Remove",needExams:"What needs exams?",addRow:"+ Add row",resetEx:"Reset example",thClass:"Class",thSubject:"Subject",thTeacher:"Teacher",thCount:"Count",thDay:"Lesson day",autoDay:"✨ Auto · best spread",perExam:"split per exam",singleDay:"single day",examN:"Exam",tripsHint:"Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.",genBtn:"Generate my dates",csvBtn:"Download CSV",printBtn:"Print",sugDates:"Your suggested dates",sugSub:"The gold date is our suggestion. Click another week if you prefer it. One exam per class per week, no exceptions.",emptyRes:"Nothing here yet. Press Generate my dates.",footerLine:"SABLE · one exam per class per week, evenly spread, no post-holiday or deadline weeks.",newBreak:"New break",newSubject:"New subject",classWord:"Class",examWord:"exam",teacherOpen:"Teacher not set",readyIdle:"Ready when you are.",resetConfirm:"Reset all rows, holidays and dates to the example?",genFirst:"Generate dates first.",todayBtn:"Today",doneBtn:"Done",tapMonthHint:"Tap the month name to pick month and year",tapYearHint:"Tap the year to pick from a range",printTitle:"SABLE · Exam Schedule",schoolYearW:"School year",printedW:"Printed",thDate:"Date",thGap:"Gap",firstGap:"first",teacherPh:"Type name or code...",teacherInvalid:"Pick a teacher from the list.",noTeacherHit:"No match. Try another spelling.",fixTeachers:"Fix teacher names first: "},
-de:{navSub:"Ausgewogene Schularbeits-Planung",schoolDates:"Schultermine",changeAnything:"Ändern Sie etwas, alles wird neu berechnet.",firstDay:"Erster Schultag",lastDay:"Letzter Schultag",semEndLbl:"Semesterende",sumStartLbl:"Sommerferienbeginn",leadWeeksLbl:"Unterrichtswochen vor der ersten Schularbeit",w2:"2 Wochen",w3:"3 Wochen",w4:"4 Wochen",w5:"5 Wochen",w6:"6 Wochen",calmWeek:"Ruhige Woche nach den Ferien",quietDeadlines:"Ruhephase 2 Wochen vor Notenschluss",dayHint:"Der Tag ist flexibel pro Zeile. ✨ Auto für die gleichmäßigste Verteilung, ein fixer Wochentag oder pro Schularbeit ein eigener Tag (1., 2., 3., ...).",holidays:"Ferien",tapCal:"(Datum antippen für Kalender)",addHol:"+ Ferien hinzufügen",addSingle:"+ Einzelner Tag",thName:"Name",thType:"Art",holSingle:"1 Tag",holMulti:"Mehrere Tage",newSingle:"Freier Tag",thFrom:"Von",thTo:"Bis",remove:"Entfernen",needExams:"Welche Schularbeiten stehen an?",addRow:"+ Zeile hinzufügen",resetEx:"Beispiel zurücksetzen",thClass:"Klasse",thSubject:"Fach",thTeacher:"Lehrkraft",thCount:"Anzahl",thDay:"Unterrichtstag",autoDay:"✨ Auto · beste Verteilung",perExam:"pro SA trennen",singleDay:"ein Tag",examN:"SA",tripsHint:"Klassenfahrten und Abwesenheiten kommen später dazu. Nur gelistete Lehrkrafte zahlen, damit Fahrten und Abwesenheiten als Nachstes blockieren konnen.",genBtn:"Termine erstellen",csvBtn:"CSV herunterladen",printBtn:"Drucken",sugDates:"Vorgeschlagene Termine",sugSub:"Gold ist unser Vorschlag. Klicken Sie auf eine andere Woche, wenn sie Ihnen lieber ist. Es bleibt bei einer Schularbeit pro Klasse und Woche.",emptyRes:"Noch keine Termine. Drücken Sie auf Termine erstellen.",footerLine:"SABLE · eine Schularbeit pro Klasse und Woche, gleichmäßig verteilt, keine Wochen nach Ferien oder vor Notenschluss.",newBreak:"Neue Ferien",newSubject:"Neues Fach",classWord:"Klasse",examWord:"Schularbeit",teacherOpen:"Lehrkraft offen",readyIdle:"Bereit, wenn Sie es sind.",resetConfirm:"Alle Zeilen, Ferien und Daten auf das Beispiel zurücksetzen?",genFirst:"Erstellen Sie zuerst die Termine.",todayBtn:"Heute",doneBtn:"Fertig",tapMonthHint:"Tippen Sie auf den Monat für Monats- und Jahrauswahl",tapYearHint:"Tippen Sie auf das Jahr für die Jahresauswahl",printTitle:"SABLE · Schularbeits-Plan",schoolYearW:"Schuljahr",printedW:"Gedruckt",thDate:"Datum",thGap:"Abstand",firstGap:"erste",teacherPh:"Name oder Code tippen...",teacherInvalid:"Lehrkraft aus der Liste wahlen.",noTeacherHit:"Kein Treffer. Anders schreiben.",fixTeachers:"Bitte Lehrkrafte korrigieren: "}
+en:{navSub:"Schularbeit Balanced Layout Engine",schoolDates:"School dates",changeAnything:"Change anything. Everything recalculates.",firstDay:"First school day",lastDay:"Last school day",semEndLbl:"Semester ends",sumStartLbl:"Summer break starts",leadWeeksLbl:"Teaching weeks before first exam",w2:"2 weeks",w3:"3 weeks",w4:"4 weeks",w5:"5 weeks",w6:"6 weeks",calmWeek:"Calm week after holidays",quietDeadlines:"Quiet 2 weeks before deadlines",dayHint:"Exam day is flexible per row. Pick ✨ Auto for the most even spread, one fixed weekday, or a different day per exam (1st, 2nd, 3rd...).",holidays:"Holidays",tapCal:"(tap a date to open the calendar)",addHol:"+ Add holiday",addSingle:"+ Single day",thName:"Name",thType:"Type",holSingle:"1 day",holMulti:"Multi-day",newSingle:"Day off",thFrom:"From",thTo:"To",remove:"Remove",needExams:"What needs exams?",addRow:"+ Add row",resetEx:"Reset example",thClass:"Class",thSubject:"Subject",thTeacher:"Teacher",thCount:"Count",thDay:"Lesson day",autoDay:"✨ Auto · best spread",perExam:"split per exam",singleDay:"single day",examN:"Exam",tripsHint:"Later versions can add class trips and teacher absence here. For now only holidays and deadlines block dates.",genBtn:"Generate my dates",csvBtn:"Download CSV",printBtn:"Print",sugDates:"Your suggested dates",sugSub:"The gold date is our suggestion. Click another week if you prefer it. One exam per class per week, no exceptions.",emptyRes:"Nothing here yet. Press Generate my dates.",footerLine:"SABLE · one exam per class per week, evenly spread, no post-holiday or deadline weeks.",newBreak:"New break",newSubject:"New subject",classWord:"Class",examWord:"exam",teacherOpen:"Teacher not set",readyIdle:"Ready when you are.",resetConfirm:"Reset all rows, holidays and dates to the example?",genFirst:"Generate dates first.",todayBtn:"Today",doneBtn:"Done",tapMonthHint:"Tap the month name to pick month and year",tapYearHint:"Tap the year to pick from a range",printTitle:"SABLE · Exam Schedule",schoolYearW:"School year",printedW:"Printed",thDate:"Date",thGap:"Gap",firstGap:"first",teacherPh:"Type name or code...",teacherInvalid:"Pick a teacher from the list.",noTeacherHit:"No match. Try another spelling.",fixTeachers:"Fix teacher names first: ",classPh:"Pick a class...",classInvalid:"Pick a class from the list.",fixClasses:"Fix class names first: "},
+de:{navSub:"Ausgewogene Schularbeits-Planung",schoolDates:"Schultermine",changeAnything:"Ändern Sie etwas, alles wird neu berechnet.",firstDay:"Erster Schultag",lastDay:"Letzter Schultag",semEndLbl:"Semesterende",sumStartLbl:"Sommerferienbeginn",leadWeeksLbl:"Unterrichtswochen vor der ersten Schularbeit",w2:"2 Wochen",w3:"3 Wochen",w4:"4 Wochen",w5:"5 Wochen",w6:"6 Wochen",calmWeek:"Ruhige Woche nach den Ferien",quietDeadlines:"Ruhephase 2 Wochen vor Notenschluss",dayHint:"Der Tag ist flexibel pro Zeile. ✨ Auto für die gleichmäßigste Verteilung, ein fixer Wochentag oder pro Schularbeit ein eigener Tag (1., 2., 3., ...).",holidays:"Ferien",tapCal:"(Datum antippen für Kalender)",addHol:"+ Ferien hinzufügen",addSingle:"+ Einzelner Tag",thName:"Name",thType:"Art",holSingle:"1 Tag",holMulti:"Mehrere Tage",newSingle:"Freier Tag",thFrom:"Von",thTo:"Bis",remove:"Entfernen",needExams:"Welche Schularbeiten stehen an?",addRow:"+ Zeile hinzufügen",resetEx:"Beispiel zurücksetzen",thClass:"Klasse",thSubject:"Fach",thTeacher:"Lehrkraft",thCount:"Anzahl",thDay:"Unterrichtstag",autoDay:"✨ Auto · beste Verteilung",perExam:"pro SA trennen",singleDay:"ein Tag",examN:"SA",tripsHint:"Klassenfahrten und Abwesenheiten kommen später dazu. Nur gelistete Lehrkrafte zahlen, damit Fahrten und Abwesenheiten als Nachstes blockieren konnen.",genBtn:"Termine erstellen",csvBtn:"CSV herunterladen",printBtn:"Drucken",sugDates:"Vorgeschlagene Termine",sugSub:"Gold ist unser Vorschlag. Klicken Sie auf eine andere Woche, wenn sie Ihnen lieber ist. Es bleibt bei einer Schularbeit pro Klasse und Woche.",emptyRes:"Noch keine Termine. Drücken Sie auf Termine erstellen.",footerLine:"SABLE · eine Schularbeit pro Klasse und Woche, gleichmäßig verteilt, keine Wochen nach Ferien oder vor Notenschluss.",newBreak:"Neue Ferien",newSubject:"Neues Fach",classWord:"Klasse",examWord:"Schularbeit",teacherOpen:"Lehrkraft offen",readyIdle:"Bereit, wenn Sie es sind.",resetConfirm:"Alle Zeilen, Ferien und Daten auf das Beispiel zurücksetzen?",genFirst:"Erstellen Sie zuerst die Termine.",todayBtn:"Heute",doneBtn:"Fertig",tapMonthHint:"Tippen Sie auf den Monat für Monats- und Jahrauswahl",tapYearHint:"Tippen Sie auf das Jahr für die Jahresauswahl",printTitle:"SABLE · Schularbeits-Plan",schoolYearW:"Schuljahr",printedW:"Gedruckt",thDate:"Datum",thGap:"Abstand",firstGap:"erste",teacherPh:"Name oder Code tippen...",teacherInvalid:"Lehrkraft aus der Liste wahlen.",noTeacherHit:"Kein Treffer. Anders schreiben.",fixTeachers:"Bitte Lehrkrafte korrigieren: ",classPh:"Klasse wahlen...",classInvalid:"Klasse aus der Liste wahlen.",fixClasses:"Bitte Klassen korrigieren: "}
 };
 const MONTHS_L = {en:["January","February","March","April","May","June","July","August","September","October","November","December"],de:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"]};
 const DOW_L = {en:["Mo","Tu","We","Th","Fr","Sa","Su"],de:["Mo","Di","Mi","Do","Fr","Sa","So"]};
@@ -424,7 +437,7 @@ function dayCell(r,i){
 }
 function renderRows(){
   rowBody.innerHTML = defaultRows.map((r,i)=>`<tr>
-    <td><input value="${esc(r.cls)}" data-r="${i}" data-k="cls" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
+    <td><div class="cls-wrap"><input value="${esc(r.cls)}" data-r="${i}" data-k="cls" placeholder="${t("classPh")}" autocomplete="off" spellcheck="false" class="cls-input !bg-white !text-ink !border-ink/15 !py-1.5 ${isValidClass(r.cls)?"":"cls-invalid"}"><div class="cls-hint ${isValidClass(r.cls)?"":"show"}">${t("classInvalid")}</div></div></td>
     <td><input value="${esc(r.subject)}" data-r="${i}" data-k="subject" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
     <td><div class="tch-wrap"><input value="${esc(r.teacher)}" data-r="${i}" data-k="teacher" placeholder="${t("teacherPh")}" autocomplete="off" spellcheck="false" class="tch-input !bg-white !text-ink !border-ink/15 !py-1.5 ${isValidTeacher(r.teacher)?"":"tch-invalid"}"><div class="tch-list" hidden></div><div class="tch-hint ${isValidTeacher(r.teacher)?"":"show"}">${t("teacherInvalid")}</div></div></td>
     <td><input type="number" min="1" max="12" value="${r.count}" data-r="${i}" data-k="count" class="!bg-white !text-ink !border-ink/15 !py-1.5"></td>
@@ -438,6 +451,7 @@ function syncRowField(el){
   if(rk==="count"){row.count=Math.max(1,Math.min(12,+el.value||1));if(Array.isArray(row.wds)){while(row.wds.length<row.count)row.wds.push(+(row.wd||0));row.wds.length=row.count;renderRows()}}
   else if(rk==="wd")row.wd=Math.max(0,Math.min(5,+el.value||0));
   else if(rk==="wds"){const e=+el.dataset.e||0;if(!Array.isArray(row.wds))row.wds=[];row.wds[e]=Math.max(0,Math.min(5,+el.value||0))}
+  else if(rk==="cls"){row[rk]=el.value;el.classList.toggle("cls-invalid",!isValidClass(el.value));const h=el.closest(".cls-wrap")?.querySelector(".cls-hint");if(h)h.classList.toggle("show",!isValidClass(el.value))}
   else if(rk==="teacher"){row[rk]=el.value;el.classList.toggle("tch-invalid",!isValidTeacher(el.value));const h=el.closest(".tch-wrap")?.querySelector(".tch-hint");if(h)h.classList.toggle("show",!isValidTeacher(el.value))}
   else row[rk]=el.value;
 }
@@ -496,9 +510,32 @@ document.addEventListener("keydown",e=>{
 document.addEventListener("click",e=>{
   const b=e.target.closest&&e.target.closest(".tch-item[data-code]");
   if(b){const input=tchActive||document.querySelector(".tch-input:focus");if(input){input.value=b.dataset.name+" ("+b.dataset.code+")";syncRowField(input);saveSable();closeTchLists();input.focus();if(window.gsap)gsap.fromTo(input,{scale:.97},{scale:1,duration:.25,ease:"back.out(2)"})}return}
-  if(!(e.target.closest&&(e.target.closest(".tch-wrap")||e.target.closest("#tchPop"))))closeTchLists();
+  if(!(e.target.closest&&(e.target.closest(".tch-wrap")||e.target.closest("#tchPop"))))closeTchLists();if(!(e.target.closest&&(e.target.closest(".cls-wrap")||e.target.closest("#clsPop"))))closeClsLists();
+});
+document.addEventListener("input",e=>{
+  if(e.target.classList&&e.target.classList.contains("cls-input"))paintClsList(e.target);
+});
+document.addEventListener("keydown",e=>{
+  if(!e.target.classList||!e.target.classList.contains("cls-input"))return;
+  const list=document.getElementById("clsPop");if(!list||list.hidden)return;
+  const items=[...list.querySelectorAll(".tch-item[data-cls]")];if(!items.length)return;
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();clsSelIdx=e.key==="ArrowDown"?(clsSelIdx+1)%items.length:(clsSelIdx-1+items.length)%items.length;items.forEach((b,k)=>b.classList.toggle("sel",k===clsSelIdx))}
+  else if(e.key==="Enter"&&clsSelIdx>=0&&items[clsSelIdx]){e.preventDefault();items[clsSelIdx].click()}
+  else if(e.key==="Escape"){closeClsLists()}
+});
+document.addEventListener("click",e=>{
+  const c=e.target.closest&&e.target.closest("#clsPop .tch-item[data-cls]");
+  if(c){const input=clsActive||document.querySelector(".cls-input:focus");if(input){input.value=c.dataset.cls;syncRowField(input);saveSable();closeClsLists();input.focus();if(window.gsap)gsap.fromTo(input,{scale:.97},{scale:1,duration:.25,ease:"back.out(2)"})}return}
+  if(!(e.target.closest&&(e.target.closest(".cls-wrap")||e.target.closest("#clsPop")||e.target.closest(".tch-wrap")||e.target.closest("#tchPop")))){closeClsLists()}
 });
 document.addEventListener("focusout",e=>{
+  if(e.target.classList&&e.target.classList.contains("cls-input")){
+    setTimeout(()=>closeClsLists(),140);
+    const ok=isValidClass(e.target.value);
+    e.target.classList.toggle("cls-invalid",!ok);
+    const hc=e.target.closest(".cls-wrap")?.querySelector(".cls-hint");if(hc)hc.classList.toggle("show",!ok);
+    if(!ok&&window.gsap)gsap.fromTo(e.target,{x:-4},{x:0,duration:.3,ease:"elastic.out(1,.4)"});
+  }
   if(e.target.classList&&e.target.classList.contains("tch-input")){
     setTimeout(()=>closeTchLists(),140);
     const ok=isValidTeacher(e.target.value);
@@ -507,11 +544,26 @@ document.addEventListener("focusout",e=>{
     if(!ok&&window.gsap)gsap.fromTo(e.target,{x:-4},{x:0,duration:.3,ease:"elastic.out(1,.4)"});
   }
 });
-window.addEventListener("scroll",()=>{if(tchActive&&document.getElementById("tchPop")&&!document.getElementById("tchPop").hidden)placeTchPop(tchActive)},true);
-window.addEventListener("resize",()=>closeTchLists());
+let clsActive=null;let clsSelIdx=-1;
+function clsPopEl(){let el=document.getElementById("clsPop");if(!el){el=document.createElement("div");el.id="clsPop";el.hidden=true;document.body.appendChild(el)}return el}
+function placeClsPop(input){const pop=clsPopEl();const r=input.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-240))+"px";pop.style.width=Math.max(r.width,200)+"px";const h=Math.min(240,pop.scrollHeight||240);let y=r.bottom+6;if(y+h>window.innerHeight-8)y=Math.max(8,r.top-h-6);pop.style.top=y+"px"}
+function paintClsList(input){
+  clsActive=input;const pop=clsPopEl();
+  const hits=classMatches(input.value||"");
+  clsSelIdx=-1;
+  if(!hits.length){pop.innerHTML=`<div class="tch-item" style="cursor:default"><span>${t("noTeacherHit")}</span></div>`}
+  else{pop.innerHTML=hits.map((c,k)=>`<button type="button" class="tch-item${k===0?" sel":""}" data-cls="${esc(c)}"><span>${esc(c)}</span><span class="tch-code">KL</span></button>`).join("")}
+  pop.hidden=false;placeClsPop(input);
+  if(window.gsap)gsap.fromTo(pop,{opacity:0,y:-6},{opacity:1,y:0,duration:.22,ease:"power2.out"});
+}
+document.addEventListener("focusin",e=>{
+  if(e.target.classList&&e.target.classList.contains("cls-input"))paintClsList(e.target);
+});
+window.addEventListener("scroll",()=>{if(tchActive&&document.getElementById("tchPop")&&!document.getElementById("tchPop").hidden)placeTchPop(tchActive);if(clsActive&&document.getElementById("clsPop")&&!document.getElementById("clsPop").hidden)placeClsPop(clsActive)},true);
+window.addEventListener("resize",()=>{closeTchLists();closeClsLists()});
 document.getElementById("addHol").onclick=()=>{defaultHols.push({name:t("newBreak"),start:"2026-01-01",end:"2026-01-03"});renderHols();saveSable()};
 document.getElementById("addSingle").onclick=()=>{defaultHols.push({name:t("newSingle"),start:"2026-01-01",end:"2026-01-01"});renderHols();saveSable()};
-document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5M",subject:t("newSubject"),teacher:"",count:2,wd:0,wds:null});renderRows();saveSable()};
+document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5m",subject:t("newSubject"),teacher:"",count:2,wd:0,wds:null});renderRows();saveSable()};
 
 function getHols(){return defaultHols.map(h=>({name:h.name,start:parseD(h.start),end:parseD(h.end)})).filter(h=>h.start&&h.end&&h.end>=h.start)}
 
@@ -575,6 +627,9 @@ function generate(){
   lastPlan=[];const warns=[];
   const badRows=[];
   defaultRows.forEach((r,idx)=>{if(!isValidTeacher(r.teacher))badRows.push((r.cls||"Class")+" / "+(r.subject||"")+" ("+(r.teacher||t("teacherOpen"))+")")});
+  const badCls=[];
+  defaultRows.forEach((r)=>{if(!isValidClass(r.cls))badCls.push((r.cls||t("classWord"))+" / "+(r.subject||""))});
+  if(badCls.length){warnBox.classList.remove("hidden");warnBox.innerHTML=(lang==="de"?t("fixClasses"):t("fixClasses"))+badCls.map(esc).join("<br>");statLine.textContent=t("readyIdle");renderResults();return}
   if(badRows.length){warnBox.classList.remove("hidden");warnBox.innerHTML=(lang==="de"?"Bitte Lehrkrafte korrigieren: ":"Fix teacher names first: ")+badRows.map(esc).join("<br>");statLine.textContent=t("readyIdle");renderResults();return}
 
   let calmCount=0;
