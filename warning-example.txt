@@ -1,0 +1,3 @@
+- Class: 4. · Subject: anything · Teacher: Andrea Obermayr-Rauter (OM) · Count: 2 · Lesson day: Tuesday
+
+Note: with plenty of free weeks the warning date usually shows up as a ⚠ alternative pill rather than the gold suggestion, since the scheduler prefers clean days and only picks warning days when no clean week is left.
