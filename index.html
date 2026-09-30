@@ -153,10 +153,10 @@ tailwind.config = {
             <div id="statLine" class="inline-flex items-center gap-3 text-sm bg-ink text-paper rounded-full px-4 py-2 w-fit">Ready when you are.</div>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-            <label class="text-xs font-semibold"><span data-i18n="firstDay">First school day</span><span class="sable-date-wrap"><input type="text" readonly id="schoolStart" data-iso="2025-09-14" value="14 Sep 2025" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
-            <label class="text-xs font-semibold"><span data-i18n="lastDay">Last school day</span><span class="sable-date-wrap"><input type="text" readonly id="schoolEnd" data-iso="2026-07-08" value="08 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
-            <label class="text-xs font-semibold"><span data-i18n="semEndLbl">Semester ends</span><span class="sable-date-wrap"><input type="text" readonly id="semEnd" data-iso="2026-02-15" value="15 Feb 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
-            <label class="text-xs font-semibold"><span data-i18n="sumStartLbl">Summer break starts</span><span class="sable-date-wrap"><input type="text" readonly id="sumStart" data-iso="2026-07-08" value="08 Jul 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold"><span data-i18n="firstDay">First school day</span><span class="sable-date-wrap"><input type="text" readonly id="schoolStart" data-iso="2026-09-14" value="14 Sep 2026" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold"><span data-i18n="lastDay">Last school day</span><span class="sable-date-wrap"><input type="text" readonly id="schoolEnd" data-iso="2027-07-09" value="09 Jul 2027" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold"><span data-i18n="semEndLbl">Semester ends</span><span class="sable-date-wrap"><input type="text" readonly id="semEnd" data-iso="2027-02-19" value="19 Feb 2027" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
+            <label class="text-xs font-semibold"><span data-i18n="sumStartLbl">Summer break starts</span><span class="sable-date-wrap"><input type="text" readonly id="sumStart" data-iso="2027-07-09" value="09 Jul 2027" class="sable-date !text-ink !bg-white !border-ink/15"></span></label>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4 items-end">
             <label class="text-xs font-semibold"><span data-i18n="leadWeeksLbl">Teaching weeks before first exam</span>
@@ -219,13 +219,13 @@ const sableCal = document.getElementById("sableCal");
 const sableBack = document.getElementById("sableCalBack");
 const calTitle = document.getElementById("calTitle");
 const calBody = document.getElementById("calBody");
-let calTarget = null, viewY = 2025, viewM = 8, viewMode = "days", yearBase = 2024;
+let calTarget = null, viewY = 2026, viewM = 8, viewMode = "days", yearBase = 2025;
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 function prettyISO(iso){const p=iso.split("-");const d=new Date(+p[0],+p[1]-1,+p[2]);return d.toLocaleDateString(LOCALE_L[lang]||"en-GB",{day:"2-digit",month:"short",year:"numeric"})}
 function getISO(id){const el=document.getElementById(id);return el.dataset.iso||el.value}
 function openCal(input){
   calTarget = input;
-  const iso = input.dataset.iso || "2025-09-14";
+  const iso = input.dataset.iso || "2026-09-14";
   const p = iso.split("-"); viewY = +p[0]; viewM = (+p[1])-1; viewMode = "days";
   positionCal(input); renderCal();
   sableCal.classList.add("open"); sableBack.classList.add("open");
@@ -319,10 +319,10 @@ function closeTchLists(){const el=document.getElementById("tchPop");if(el)el.hid
 
 
 let defaultHols = [
-  {name:"Autumn break", start:"2025-10-26", end:"2025-11-02"},
-  {name:"Christmas", start:"2025-12-24", end:"2026-01-06"},
-  {name:"Semester break", start:"2026-02-07", end:"2026-02-15"},
-  {name:"Easter break", start:"2026-03-22", end:"2026-03-29"}
+  {name:"Autumn break", start:"2026-10-26", end:"2026-10-30"},
+  {name:"Christmas", start:"2026-12-24", end:"2027-01-06"},
+  {name:"Semester break", start:"2027-02-15", end:"2027-02-19"},
+  {name:"Easter break", start:"2027-03-22", end:"2027-03-29"}
 ];
 let defaultRows = [
   {cls:"5m", subject:"Math", teacher:"Manuela Haindl (HL)", count:4, wd:3},
@@ -332,7 +332,7 @@ let defaultRows = [
 ];
 const EXAMPLE_HOLS = JSON.parse(JSON.stringify(defaultHols));
 const EXAMPLE_ROWS = JSON.parse(JSON.stringify(defaultRows));
-const SABLE_KEY = "sable-v1";
+const SABLE_KEY = "sable-v2";
 function setDateField(id,iso){const el=document.getElementById(id);if(!el||!iso)return;el.dataset.iso=iso;el.value=prettyISO(iso)}
 function saveSable(){
   try{
@@ -366,8 +366,8 @@ function resetSable(){
   try{localStorage.removeItem(SABLE_KEY)}catch(err){}
   defaultHols=JSON.parse(JSON.stringify(EXAMPLE_HOLS));
   defaultRows=JSON.parse(JSON.stringify(EXAMPLE_ROWS));
-  setDateField("schoolStart","2025-09-14");setDateField("schoolEnd","2026-07-08");
-  setDateField("semEnd","2026-02-15");setDateField("sumStart","2026-07-08");
+  setDateField("schoolStart","2026-09-14");setDateField("schoolEnd","2027-07-09");
+  setDateField("semEnd","2027-02-19");setDateField("sumStart","2027-07-09");
   document.getElementById("leadWeeks").value="4";
   document.getElementById("blockWeekAfter").checked=true;
   document.getElementById("blockNoten").checked=true;
@@ -561,8 +561,8 @@ document.addEventListener("focusin",e=>{
 });
 window.addEventListener("scroll",()=>{if(tchActive&&document.getElementById("tchPop")&&!document.getElementById("tchPop").hidden)placeTchPop(tchActive);if(clsActive&&document.getElementById("clsPop")&&!document.getElementById("clsPop").hidden)placeClsPop(clsActive)},true);
 window.addEventListener("resize",()=>{closeTchLists();closeClsLists()});
-document.getElementById("addHol").onclick=()=>{defaultHols.push({name:t("newBreak"),start:"2026-01-01",end:"2026-01-03"});renderHols();saveSable()};
-document.getElementById("addSingle").onclick=()=>{defaultHols.push({name:t("newSingle"),start:"2026-01-01",end:"2026-01-01"});renderHols();saveSable()};
+document.getElementById("addHol").onclick=()=>{defaultHols.push({name:t("newBreak"),start:"2027-01-01",end:"2027-01-03"});renderHols();saveSable()};
+document.getElementById("addSingle").onclick=()=>{defaultHols.push({name:t("newSingle"),start:"2027-01-01",end:"2027-01-01"});renderHols();saveSable()};
 document.getElementById("addRow").onclick=()=>{defaultRows.push({cls:"5m",subject:t("newSubject"),teacher:"",count:2,wd:0,wds:null});renderRows();saveSable()};
 
 function getHols(){return defaultHols.map(h=>({name:h.name,start:parseD(h.start),end:parseD(h.end)})).filter(h=>h.start&&h.end&&h.end>=h.start)}
